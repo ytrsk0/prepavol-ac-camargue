@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "PerformancePoint": {
+      "title": "PerformancePoint",
+      "description": "A data point in the performance lookup table",
+      "type": "object",
+      "properties": {
+        "alt": { "type": "number" },
+        "temp": { "type": "number" },
+        "distances": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        }
+      },
+      "required": ["alt", "temp", "distances"]
+    },
+    "PlaneDefinition": {
+      "title": "PlaneDefinition",
+      "description": "Aircraft configuration and characteristics",
+      "type": "object",
+      "properties": {
+        "callsign": { "type": "string" },
+        "planetype": { "type": "string" },
+        "bew": { "type": "number" },
+        "mtow": { "type": "number" },
+        "fuelrate": { "type": "number" },
+        "maxmainfuel": { "type": "number" },
+        "maxwingfuel": { "type": "number" },
+        "maxauxfuel": { "type": "number" },
+        "unusable_mainfuel": { "type": "number" },
+        "unusable_wingfuel": { "type": "number" },
+        "bagmax": { "type": "number" },
+        "bagmax2": { "type": "number" },
+        "sumbagmax": { "type": "number" },
+        "numSeats": { "type": "number" },
+        "takeoffRollGrid": { "type": "array", "items": { "$ref": "PerformancePoint" } },
+        "takeoff50ftGrid": { "type": "array", "items": { "$ref": "PerformancePoint" } },
+        "landingRollGrid": { "type": "array", "items": { "$ref": "PerformancePoint" } },
+        "landing50ftGrid": { "type": "array", "items": { "$ref": "PerformancePoint" } },
+        "arms": {
+          "type": "object",
+          "properties": {
+            "bew": { "type": "number" },
+            "front": { "type": "number" },
+            "rear": { "type": "number" },
+            "baggage": { "type": "number" },
+            "baggage2": { "type": "number" },
+            "mainfuel": { "type": "number" },
+            "wingfuel": { "type": "number" },
+            "auxfuel": { "type": "number" }
+          }
+        },
+        "envelope": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      },
+      "required": ["planetype", "bew", "mtow", "arms", "envelope"]
+    }
+  },
+  "firestore": {
+    "/fleet/{planeId}": {
+      "schema": "PlaneDefinition",
+      "description": "The fleet of aircraft available for missions"
+    }
+  }
+}

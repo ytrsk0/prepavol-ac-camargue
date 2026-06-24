@@ -1,0 +1,6 @@
+{
+  "name": "Prepavol v2 - Flight Preparation Suite",
+  "description": "A modern flight preparation tool for pilots, featuring weight & balance, performance predictions, and AeroGest integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
