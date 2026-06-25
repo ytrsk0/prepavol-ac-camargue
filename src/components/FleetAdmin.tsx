@@ -497,15 +497,6 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
                   </div>
                 </div>
               </div>
-              <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 text-[10px] font-bold text-slate-500">
-                    <Info className="w-3 h-3" />
-                    {plane.envelope.length} points
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-blue-500 transition-colors" />
-              </div>
             </div>
           ))}
         </div>

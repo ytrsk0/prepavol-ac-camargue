@@ -53,14 +53,47 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
             </tbody>
           </table>
           <div className="mt-4 p-3 border border-black text-xs">
-            <p className="font-bold mb-1">Status:</p>
-            <p>{wb.isOverweight ? '❌ OVERWEIGHT' : '✅ WEIGHT OK'}</p>
-            <p>{wb.isCgValid ? '✅ CG WITHIN ENVELOPE' : '❌ CG OUTSIDE ENVELOPE'}</p>
-            <p>Endurance: {formatDuration(wb.enduranceMinutes)}</p>
-            <div className="mt-2 pt-2 border-t border-black/10 text-[10px]">
-              <p>VFR Day Endurance: <span className="font-bold">{formatDuration(wb.dayFlyingMinutes)}</span></p>
-              <p>VFR Night Duration: <span className="font-bold">{formatDuration(wb.nightFlyingMinutes)}</span></p>
+            <p className="font-bold mb-1 uppercase tracking-wider">W&B Safety Status</p>
+            <div className="grid grid-cols-2 gap-2 mt-1">
+              <p className="font-bold">{wb.isOverweight ? '❌ OVERWEIGHT' : '✅ WEIGHT OK'}</p>
+              <p className="font-bold">{wb.isCgValid ? '✅ CG ENVELOPE OK' : '❌ CG OUTSIDE ENVELOPE'}</p>
             </div>
+          </div>
+
+          <div className="mt-6">
+            <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">Fuel & Endurance Planning</h2>
+            <table className="w-full text-sm">
+              <tbody className="divide-y divide-slate-200">
+                <tr>
+                  <td className="py-1">Total Fuel Capacity</td>
+                  <td className="text-right font-bold">{(plane.maxmainfuel || 0) + (plane.maxwingfuel || 0) + (plane.maxauxfuel || 0)} L</td>
+                </tr>
+                <tr>
+                  <td className="py-1">Total Fuel Loaded</td>
+                  <td className="text-right font-bold">{data.mainfuel + data.leftwingfuel + data.rightwingfuel + data.auxfuel} L</td>
+                </tr>
+                <tr>
+                  <td className="py-1">Fuel Weight (Density 0.72)</td>
+                  <td className="text-right font-bold">{((data.mainfuel + data.leftwingfuel + data.rightwingfuel + data.auxfuel) * 0.72).toFixed(1)} kg</td>
+                </tr>
+                <tr>
+                  <td className="py-1">Fuel Consumption Rate</td>
+                  <td className="text-right font-bold">{plane.fuelrate} L/h</td>
+                </tr>
+                <tr className="border-t border-black font-bold">
+                  <td className="py-1.5 uppercase text-black font-extrabold">Total Endurance</td>
+                  <td className="py-1.5 text-right text-base text-black font-black">{formatDuration(wb.enduranceMinutes)}</td>
+                </tr>
+                <tr>
+                  <td className="py-1 text-xs">VFR Day Endurance (30m reserve)</td>
+                  <td className="text-right font-bold text-emerald-700 text-xs">{formatDuration(wb.dayFlyingMinutes)}</td>
+                </tr>
+                <tr>
+                  <td className="py-1 text-xs">VFR Night Endurance (45m reserve)</td>
+                  <td className="text-right font-bold text-indigo-700 text-xs">{formatDuration(wb.nightFlyingMinutes)}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </section>
 
@@ -88,7 +121,7 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
                   <td className="border border-black p-1 text-center">{tkPerf.asphalt[3]}m</td>
                 </tr>
                 <tr className="bg-slate-50">
-                  <td className="border border-black p-1">50ft (Herbe x1.495)</td>
+                  <td className="border border-black p-1">50ft (Grass x1.15)</td>
                   <td className="border border-black p-1 text-center font-black">{tkPerf.grass[0]}m</td>
                   <td className="border border-black p-1 text-center">{tkPerf.grass[1]}m</td>
                   <td className="border border-black p-1 text-center">{tkPerf.grass[2]}m</td>
@@ -120,7 +153,7 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
                   <td className="border border-black p-1 text-center">{ldPerf.asphalt[3]}m</td>
                 </tr>
                 <tr className="bg-slate-50">
-                  <td className="border border-black p-1">50ft (Herbe x1.495)</td>
+                  <td className="border border-black p-1">50ft (Grass x1.15)</td>
                   <td className="border border-black p-1 text-center font-black">{ldPerf.grass[0]}m</td>
                   <td className="border border-black p-1 text-center">{ldPerf.grass[1]}m</td>
                   <td className="border border-black p-1 text-center">{ldPerf.grass[2]}m</td>
@@ -138,13 +171,15 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
 
       <div className="mt-8 break-before-page">
         <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">Weight & Balance Envelope</h2>
-        <div className="h-[400px] w-full border border-black p-4">
+        <div className="w-full flex justify-center p-4">
           <EnvelopeChart 
             plane={plane} 
             cg={wb.cg} 
             weight={wb.totalWeight} 
             cgNoFuel={wb.cgNoFuel} 
             weightNoFuel={wb.totalWeightNoFuel} 
+            width={620}
+            height={360}
           />
         </div>
         <div className="mt-4 flex justify-center gap-8 text-xs font-bold">

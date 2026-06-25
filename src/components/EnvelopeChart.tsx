@@ -21,6 +21,8 @@ interface EnvelopeChartProps {
   weight: number;
   cgNoFuel: number;
   weightNoFuel: number;
+  width?: number | string;
+  height?: number | string;
 }
 
 const NoPoint = () => null;
@@ -53,6 +55,8 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
   weight,
   cgNoFuel,
   weightNoFuel,
+  width,
+  height,
 }) => {
   // Prepare envelope data for the polygon
   const envelopeData = plane.envelope.map(([x, y]) => ({ x, y }));
@@ -73,86 +77,103 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
   const yMax = Math.max(...weightPoints) * 1.05;
 
   const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-  const gridColor = isDark ? '#334155' : '#e2e8f0';
-  const labelColor = isDark ? '#94a3b8' : '#64748b';
+  const forceLight = width !== undefined;
+  const gridColor = (isDark && !forceLight) ? '#334155' : '#cbd5e1';
+  const labelColor = (isDark && !forceLight) ? '#94a3b8' : '#334155';
+
+  const chartElement = (
+    <ScatterChart margin={{ top: 20, right: 30, bottom: 25, left: 25 }} width={typeof width === 'number' ? width : undefined} height={typeof height === 'number' ? height : undefined}>
+      <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+      <XAxis 
+        type="number" 
+        dataKey="x" 
+        name="CG" 
+        unit="m" 
+        domain={[xMin, xMax]} 
+        tick={{ fontSize: 11, fill: labelColor }}
+        stroke={labelColor}
+        label={{ value: "Center of Gravity (m)", offset: -10, position: "insideBottom", style: { fill: labelColor, fontSize: '11px', fontWeight: 'bold' } }}
+      />
+      <YAxis 
+        type="number" 
+        dataKey="y" 
+        name="Weight" 
+        unit="kg" 
+        domain={[yMin, yMax]}
+        tick={{ fontSize: 11, fill: labelColor }}
+        stroke={labelColor}
+        label={{ value: "Weight (kg)", angle: -90, position: "insideLeft", style: { fill: labelColor, fontSize: '11px', fontWeight: 'bold' } }}
+      />
+      <ZAxis type="number" range={[100, 100]} />
+      <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+      
+      {/* Envelope Polygon */}
+      <Scatter 
+        name="Envelope" 
+        data={envelopeLineData} 
+        fill="transparent" 
+        line={{ stroke: '#2563eb', strokeWidth: 2 }}
+        shape={<NoPoint />}
+      />
+
+      {/* MTOW Line */}
+      <ReferenceLine 
+        y={plane.mtow} 
+        stroke="#dc2626" 
+        strokeDasharray="5 5"
+        strokeWidth={1.5}
+        label={{ value: "MTOW", position: "top", style: { fill: '#dc2626', fontSize: '10px', fontWeight: 'bold' } }}
+      />
+
+      {/* Loading Path (Fuel burn) */}
+      <Scatter 
+        name="Fuel Burn Path" 
+        data={[...currentPoint, ...noFuelPoint]} 
+        fill="transparent" 
+        stroke="#64748b" 
+        strokeWidth={1.5} 
+        strokeDasharray="4 4"
+        line 
+        shape={<NoPoint />}
+      />
+
+      {/* Current CG Point */}
+      <Scatter 
+        name="Current CG" 
+        data={currentPoint} 
+        fill="#2563eb" 
+        stroke="#1e3a8a"
+        strokeWidth={2}
+        shape={<CurrentPoint />}
+      />
+
+      {/* Zero Fuel CG Point */}
+      <Scatter 
+        name="Zero Fuel CG" 
+        data={noFuelPoint} 
+        fill="#475569" 
+        stroke="#0f172a"
+        strokeWidth={2}
+        shape={<ZeroFuelPoint />}
+      />
+    </ScatterChart>
+  );
+
+  if (typeof width === 'number' && typeof height === 'number') {
+    return (
+      <div 
+        style={{ width: `${width}px`, height: `${height}px` }} 
+        className="bg-white p-4 rounded-xl border border-black/20 flex items-center justify-center"
+      >
+        {chartElement}
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-[400px] bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
       <ResponsiveContainer width="100%" height="100%">
-        <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-          <XAxis 
-            type="number" 
-            dataKey="x" 
-            name="CG" 
-            unit="m" 
-            domain={[xMin, xMax]} 
-            tick={{ fontSize: 12, fill: labelColor }}
-            stroke={labelColor}
-            label={{ value: "Center of Gravity (m)", offset: -10, position: "insideBottom", style: { fill: labelColor, fontSize: '12px' } }}
-          />
-          <YAxis 
-            type="number" 
-            dataKey="y" 
-            name="Weight" 
-            unit="kg" 
-            domain={[yMin, yMax]}
-            tick={{ fontSize: 12, fill: labelColor }}
-            stroke={labelColor}
-            label={{ value: "Weight (kg)", angle: -90, position: "insideLeft", style: { fill: labelColor, fontSize: '12px' } }}
-          />
-          <ZAxis type="number" range={[100, 100]} />
-          <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-          
-          {/* Envelope Polygon */}
-          <Scatter 
-            name="Envelope" 
-            data={envelopeLineData} 
-            fill="transparent" 
-            line={{ stroke: '#3b82f6', strokeWidth: 2 }}
-            shape={<NoPoint />}
-          />
-
-          {/* MTOW Line */}
-          <ReferenceLine 
-            y={plane.mtow} 
-            stroke="#ef4444" 
-            strokeDasharray="5 5"
-            label={{ value: "MTOW", position: "top", style: { fill: '#ef4444', fontSize: '10px', fontWeight: 'bold' } }}
-          />
-
-          {/* Loading Path (Fuel burn) */}
-          <Scatter 
-            name="Fuel Burn Path" 
-            data={[...currentPoint, ...noFuelPoint]} 
-            fill="transparent" 
-            stroke="#94a3b8" 
-            strokeWidth={1} 
-            strokeDasharray="3 3"
-            line 
-            shape={<NoPoint />}
-          />
-
-          {/* Current CG Point */}
-          <Scatter 
-            name="Current CG" 
-            data={currentPoint} 
-            fill="#3b82f6" 
-            stroke="#fff"
-            strokeWidth={2}
-            shape={<CurrentPoint />}
-          />
-
-          {/* Zero Fuel CG Point */}
-          <Scatter 
-            name="Zero Fuel CG" 
-            data={noFuelPoint} 
-            fill="#94a3b8" 
-            stroke="#fff"
-            strokeWidth={2}
-            shape={<ZeroFuelPoint />}
-          />
-        </ScatterChart>
+        {chartElement}
       </ResponsiveContainer>
       <div className="flex justify-center gap-6 mt-2 text-xs text-slate-500 dark:text-slate-400 print:hidden">
         <div className="flex items-center gap-2">

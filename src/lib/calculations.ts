@@ -161,6 +161,125 @@ export function solveLinearRegression(data: { x: number[], y: number }[]) {
 }
 
 /**
+ * Interpolates distance linearly across altitude, temperature, and weight.
+ * Provides exact point matches when inputs align with the POH grid.
+ */
+export function interpolateDistance(
+  grid: PerformancePoint[] | undefined,
+  zp: number,
+  tempC: number,
+  auw: number
+): number {
+  if (!grid || grid.length === 0) return 0;
+
+  // 1. Get all unique weights in the grid
+  const uniqueWeights = Array.from(new Set(
+    grid.flatMap(point => Object.keys(point.distances).map(Number))
+  )).sort((a, b) => a - b);
+
+  if (uniqueWeights.length === 0) return 0;
+
+  // Helper function to interpolate for a single fixed weight
+  const interpolateForWeight = (w: number): number => {
+    // Get unique altitudes in the grid
+    const uniqueAlts = Array.from(new Set(grid.map(p => p.alt))).sort((a, b) => a - b);
+    if (uniqueAlts.length === 0) return 0;
+
+    // Find the bounding altitudes
+    let alt1 = uniqueAlts[0];
+    let alt2 = uniqueAlts[uniqueAlts.length - 1];
+
+    if (zp <= alt1) {
+      alt1 = uniqueAlts[0];
+      alt2 = uniqueAlts[0];
+    } else if (zp >= alt2) {
+      alt1 = uniqueAlts[uniqueAlts.length - 1];
+      alt2 = uniqueAlts[uniqueAlts.length - 1];
+    } else {
+      for (let i = 0; i < uniqueAlts.length - 1; i++) {
+        if (zp >= uniqueAlts[i] && zp <= uniqueAlts[i + 1]) {
+          alt1 = uniqueAlts[i];
+          alt2 = uniqueAlts[i + 1];
+          break;
+        }
+      }
+    }
+
+    // Helper to interpolate temperature for a given altitude and weight
+    const getDistAtAlt = (targetAlt: number): number => {
+      // Find all points at this altitude
+      const pointsAtAlt = grid.filter(p => p.alt === targetAlt);
+      if (pointsAtAlt.length === 0) return 0;
+
+      // Sort points by temperature
+      const sortedPoints = [...pointsAtAlt].sort((a, b) => a.temp - b.temp);
+      const temps = sortedPoints.map(p => p.temp);
+
+      // Find bounding temperatures
+      let t1 = temps[0];
+      let t2 = temps[temps.length - 1];
+
+      let p1 = sortedPoints[0];
+      let p2 = sortedPoints[sortedPoints.length - 1];
+
+      if (tempC <= t1) {
+        p1 = sortedPoints[0];
+        p2 = sortedPoints[0];
+      } else if (tempC >= t2) {
+        p1 = sortedPoints[sortedPoints.length - 1];
+        p2 = sortedPoints[sortedPoints.length - 1];
+      } else {
+        for (let i = 0; i < sortedPoints.length - 1; i++) {
+          if (tempC >= sortedPoints[i].temp && tempC <= sortedPoints[i+1].temp) {
+            p1 = sortedPoints[i];
+            p2 = sortedPoints[i + 1];
+            break;
+          }
+        }
+      }
+
+      const d1 = p1.distances[w] !== undefined ? p1.distances[w] : 0;
+      const d2 = p2.distances[w] !== undefined ? p2.distances[w] : 0;
+
+      if (p1.temp === p2.temp) return d1;
+      const t_factor = (tempC - p1.temp) / (p2.temp - p1.temp);
+      return d1 + t_factor * (d2 - d1);
+    };
+
+    const d_alt1 = getDistAtAlt(alt1);
+    const d_alt2 = getDistAtAlt(alt2);
+
+    if (alt1 === alt2) return d_alt1;
+    const alt_factor = (zp - alt1) / (alt2 - alt1);
+    return d_alt1 + alt_factor * (d_alt2 - d_alt1);
+  };
+
+  // Find bounding weights
+  let w1 = uniqueWeights[0];
+  let w2 = uniqueWeights[uniqueWeights.length - 1];
+
+  if (auw <= w1) {
+    return interpolateForWeight(w1);
+  } else if (auw >= w2) {
+    return interpolateForWeight(w2);
+  } else {
+    for (let i = 0; i < uniqueWeights.length - 1; i++) {
+      if (auw >= uniqueWeights[i] && auw <= uniqueWeights[i + 1]) {
+        w1 = uniqueWeights[i];
+        w2 = uniqueWeights[i + 1];
+        break;
+      }
+    }
+    const d_w1 = interpolateForWeight(w1);
+    const d_w2 = interpolateForWeight(w2);
+
+    if (w1 === w2) return d_w1;
+    const w_factor = (auw - w1) / (w2 - w1);
+    return d_w1 + w_factor * (d_w2 - d_w1);
+  }
+}
+
+/**
  * Linear Regression performance prediction based on POH data.
  * Replicates planes.py logic: LinearRegression trained on [ZP, TempK, Weight].
  */
@@ -180,36 +299,25 @@ export function predictDistance(
     };
   }
 
-  // Prepare training data from raw grid
+  // Prepare training data from raw grid for first-degree coefficients
   const trainingData: { x: number[], y: number }[] = [];
   grid.forEach(point => {
     Object.entries(point.distances).forEach(([wStr, dist]) => {
         const W = Number(wStr);
         const Zp = point.alt;
         const T = point.temp + 273;
-        // Exact Degree-2 Polynomial Features to match sklearn PolynomialFeatures(2)
-        // Features: [Zp, T, W, Zp^2, Zp*T, Zp*W, T^2, T*W, W^2]
+        // First-degree features: [Zp, T, W]
         trainingData.push({
-            x: [Zp, T, W, Zp * Zp, Zp * T, Zp * W, T * T, T * W, W * W],
+            x: [Zp, T, W],
             y: dist
         });
     });
   });
 
   const coeffs = solveLinearRegression(trainingData);
-  let baseDistance = 0;
 
-  if (coeffs) {
-      const tempK = tempC + 273;
-      const x = [zp, tempK, auw, zp * zp, zp * tempK, zp * auw, tempK * tempK, tempK * auw, auw * auw];
-      baseDistance = coeffs[0];
-      for(let i = 0; i < x.length; i++) {
-        baseDistance += coeffs[i+1] * x[i];
-      }
-  }
-  
-  // Ensure we don't return negative distances
-  baseDistance = Math.max(0, baseDistance);
+  // Use the 100% exact multi-linear interpolation for the base distance
+  const baseDistance = Math.max(0, interpolateDistance(grid, zp, tempC, auw));
 
   // Headwind and surface adjustment mapping matching original Robin POH factors:
   let headwindCoeffs;

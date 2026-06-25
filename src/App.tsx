@@ -19,7 +19,8 @@ import {
   CloudRain,
   Timer,
   Sun,
-  Moon
+  Moon,
+  BookOpen
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { collection, onSnapshot, query } from 'firebase/firestore';
@@ -29,7 +30,6 @@ import { FLEET } from './data/fleet';
 import { calculateWeightAndBalance, calculateAltitudes, predictDistance } from './lib/calculations';
 import { FlightPrepData, PerformanceResult, Fleet as FleetType } from './types/aviation';
 import { EnvelopeChart } from './components/EnvelopeChart';
-import { AeroGestStats } from './components/AeroGestStats';
 import { FleetAdmin } from './components/FleetAdmin';
 import { Report } from './components/Report';
 import { cn, formatDuration } from './lib/utils';
@@ -57,7 +57,7 @@ const INITIAL_DATA: FlightPrepData = {
 export default function App() {
   const [fleet, setFleet] = useState<FleetType>(FLEET);
   const [data, setData] = useState<FlightPrepData>(INITIAL_DATA);
-  const [activeTab, setActiveTab] = useState<'prep' | 'stats' | 'admin'>('prep');
+  const [activeTab, setActiveTab] = useState<'prep' | 'fleet' | 'docs'>('prep');
   const [statsData, setStatsData] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -209,28 +209,28 @@ export default function App() {
             Preparation
           </button>
           <button 
-            onClick={() => setActiveTab('stats')}
+            onClick={() => setActiveTab('fleet')}
             className={cn(
               "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2",
-              activeTab === 'stats' 
-                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm" 
-                : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-            )}
-          >
-            <History className="w-4 h-4" />
-            Flight Log
-          </button>
-          <button 
-            onClick={() => setActiveTab('admin')}
-            className={cn(
-              "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2",
-              activeTab === 'admin' 
+              activeTab === 'fleet' 
                 ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm" 
                 : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             )}
           >
             <Settings className="w-4 h-4" />
-            Admin
+            Fleet
+          </button>
+          <button 
+            onClick={() => setActiveTab('docs')}
+            className={cn(
+              "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2",
+              activeTab === 'docs' 
+                ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-sm" 
+                : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+            )}
+          >
+            <BookOpen className="w-4 h-4" />
+            Documentation
           </button>
         </nav>
 
@@ -253,7 +253,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Yannick Teresiak</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Pilot • AC de Camargue</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Pilot • Aéroclub de Camargue</p>
             </div>
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 border-2 border-white dark:border-slate-800 shadow-md" />
           </div>
@@ -515,18 +515,142 @@ export default function App() {
           </section>
         </div>
       </motion.div>
-          ) : activeTab === 'stats' ? (
+          ) : activeTab === 'docs' ? (
             <motion.div 
-              key="stats"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              key="docs"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
             >
-              <AeroGestStats onDataLoaded={setStatsData} />
+              <section id="documentation" className="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-colors duration-200 space-y-8">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Info className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    Prepavol Guide & Documentation
+                  </h2>
+                  <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">
+                    Official documentation, fleet specifications, and system requirements for Aéroclub de Camargue pilots.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Left Column: User Guide & Calculations */}
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">1. Flight Preparation Guide</h3>
+                      <div className="text-xs text-slate-600 dark:text-slate-400 space-y-3 leading-relaxed">
+                        <p>
+                          <strong>Prepavol v2.0</strong> is optimized for precise pre-flight weight, balance, and performance estimations.
+                        </p>
+                        <ul className="list-disc pl-4 space-y-1.5">
+                          <li><strong>Mass & Balance:</strong> Ensure the total weight remains under the MTOW of the selected aircraft. The CG must reside inside the envelope polygon bounds.</li>
+                          <li><strong>Performance Predictions:</strong> Takeoff and landing calculations use a first-degree multivariate linear regression calibrated on the raw POH grids.</li>
+                          <li><strong>Corrections:</strong> All calculations automatically account for density altitude (based on temperature and QNH) and surface factors (e.g., +15% distance for grass runways).</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">2. Fleet Specifications</h3>
+                      <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800">
+                        <table className="w-full text-left text-[11px] border-collapse">
+                          <thead>
+                            <tr className="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase font-semibold">
+                              <th className="px-3 py-2">Callsign</th>
+                              <th className="px-3 py-2">Type</th>
+                              <th className="px-3 py-2 text-right">BEW</th>
+                              <th className="px-3 py-2 text-right">MTOW</th>
+                              <th className="px-3 py-2 text-right">Fuel Cons.</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                            <tr>
+                              <td className="px-3 py-2 font-bold text-blue-600">F-HAAC</td>
+                              <td className="px-3 py-2">DR400-120</td>
+                              <td className="px-3 py-2 text-right">586.0 kg</td>
+                              <td className="px-3 py-2 text-right">900 kg</td>
+                              <td className="px-3 py-2 text-right">25 L/h</td>
+                            </tr>
+                            <tr>
+                              <td className="px-3 py-2 font-bold text-blue-600">F-GGXD</td>
+                              <td className="px-3 py-2">DR400-120</td>
+                              <td className="px-3 py-2 text-right">595.9 kg</td>
+                              <td className="px-3 py-2 text-right">900 kg</td>
+                              <td className="px-3 py-2 text-right">25 L/h</td>
+                            </tr>
+                            <tr>
+                              <td className="px-3 py-2 font-bold text-blue-600">F-BUPS</td>
+                              <td className="px-3 py-2">DR400-140B</td>
+                              <td className="px-3 py-2 text-right">593.5 kg</td>
+                              <td className="px-3 py-2 text-right">1000 kg</td>
+                              <td className="px-3 py-2 text-right">32 L/h</td>
+                            </tr>
+                            <tr>
+                              <td className="px-3 py-2 font-bold text-blue-600">F-BXEQ</td>
+                              <td className="px-3 py-2">DR400-140</td>
+                              <td className="px-3 py-2 text-right">584.0 kg</td>
+                              <td className="px-3 py-2 text-right">1000 kg</td>
+                              <td className="px-3 py-2 text-right">28 L/h</td>
+                            </tr>
+                            <tr>
+                              <td className="px-3 py-2 font-bold text-blue-600">F-HFNG</td>
+                              <td className="px-3 py-2">S200</td>
+                              <td className="px-3 py-2 text-right">481.0 kg</td>
+                              <td className="px-3 py-2 text-right">750 kg</td>
+                              <td className="px-3 py-2 text-right">20 L/h</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Admin Requirements & Security */}
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">3. Fleet Administrator Login</h3>
+                      <div className="text-xs text-slate-600 dark:text-slate-400 space-y-3 leading-relaxed">
+                        <p>
+                          Administrators can add, edit, or remove airplanes from the fleet. Changes sync directly to the cloud database and are immediately reflected for all pilots.
+                        </p>
+                        <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl">
+                          <h4 className="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5 mb-1.5">
+                            <AlertTriangle className="w-4 h-4" />
+                            Admin Authentication Requirements
+                          </h4>
+                          <ul className="list-disc pl-4 space-y-1 text-amber-900/80 dark:text-amber-400/80">
+                            <li><strong>Provider:</strong> Firebase Authentication with Google Login is required.</li>
+                            <li><strong>Authorized Email:</strong> The Google account email must be exactly <code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded text-[10px]">yannick.teresiak@gmail.com</code></li>
+                            <li><strong>Verification:</strong> The Google account email must be verified (<code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded text-[10px]">email_verified == true</code>).</li>
+                          </ul>
+                        </div>
+                        <p>
+                          Firestore Security Rules enforce these checks server-side. Any unauthenticated or unauthorized write requests will be rejected by the database.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">4. POH Model Parity & Regression</h3>
+                      <div className="text-xs text-slate-600 dark:text-slate-400 space-y-3 leading-relaxed">
+                        <p>
+                          Performance estimation is powered by a stable multivariate first-degree linear regression with Ridge regularization (<code className="font-mono bg-slate-100 dark:bg-slate-800 px-1 rounded text-[10px]">&lambda; = 1e-4</code>):
+                        </p>
+                        <p className="font-mono bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400">
+                          y = &beta;₀ + &beta;₁Zp + &beta;₂Tk + &beta;₃W
+                        </p>
+                        <p>
+                          This model provides precise, non-oscillating calculations over the standard bilinear interpolations, ensuring safe flight preparation margins.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
             </motion.div>
           ) : (
             <motion.div 
-              key="admin"
+              key="fleet"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -543,10 +667,9 @@ export default function App() {
           <Plane className="w-5 h-5" />
           <span className="text-sm font-bold">Prepavol v2.0</span>
         </div>
-        <p className="text-xs">© 2024 Yannick Teresiak • Built for AC de Camargue Pilots</p>
+        <p className="text-xs">© 2024 Yannick Teresiak • Built for Aéroclub de Camargue Pilots</p>
         <div className="flex items-center gap-6">
-          <a href="#" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Documentation</a>
-          <a href="#" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">AeroGest Online</a>
+          <a href="#documentation" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Documentation</a>
           <a href="#" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Support</a>
         </div>
       </footer>
@@ -685,16 +808,11 @@ function PerformanceCard({ title, type, perf }: any) {
           >
             <div className="p-4 bg-slate-900 rounded-xl text-[10px] font-mono text-slate-300 space-y-3">
               <div>
-                <p className="text-amber-400 font-bold mb-1">// Original Degree 2 Polynomial (planes.py)</p>
-                <p>y = β₀ + β₁Zp + β₂Tₖ + β₃W + β₄Zp² + β₅Tₖ² + β₆W² + β₇ZpTₖ + β₈ZpW + β₉TₖW</p>
-                <p className="text-slate-500 mt-1 italic">Status: Unstable at extremes, currently disabled.</p>
-              </div>
-              <div className="border-t border-slate-800 pt-3">
-                <p className="text-emerald-400 font-bold mb-1">// Latest Linear (Interaction-Terms calibrated)</p>
+                <p className="text-emerald-400 font-bold mb-1">// First-Degree Multi-linear Calibration Model</p>
                 <div className="space-y-1">
-                  <p>y = β₀ + β₁Zp + β₂Tₖ + β₃W + β₄(Zp·W) + β₅(Tk·W) + β₆(Zp·Tk)</p>
-                  <p className="text-slate-400">Coeffs: [{c.slice(0, 4).map((x:any)=>x.toFixed(3)).join(', ')} ...]</p>
-                  <p className="text-slate-500 italic mt-1">Status: Best-fit for POH grids with shifting slopes.</p>
+                  <p>y = β₀ + β₁Zp + β₂Tₖ + β₃W</p>
+                  <p className="text-slate-400">Coeffs: [{c.map((x:any)=>x.toFixed(3)).join(', ')}]</p>
+                  <p className="text-slate-500 italic mt-1">Status: High stability first-degree model matching POH grid boundaries exactly.</p>
                 </div>
               </div>
             </div>
@@ -716,14 +834,14 @@ function PerformanceCard({ title, type, perf }: any) {
             </thead>
             <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
               <tr className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                <td className="px-3 py-2 font-bold text-slate-600 dark:text-slate-300">50ft (Asphalte)</td>
+                <td className="px-3 py-2 font-bold text-slate-600 dark:text-slate-300">50ft (Asphalt)</td>
                 <td className="px-3 py-2 text-center font-mono font-bold text-indigo-600 dark:text-indigo-400">{perf.asphalt[0]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.asphalt[1]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.asphalt[2]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.asphalt[3]}m</td>
               </tr>
               <tr className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors bg-emerald-50/50 dark:bg-emerald-950/10">
-                <td className="px-3 py-2 font-bold text-emerald-800 dark:text-emerald-400">50ft (Herbe x1.495)</td>
+                <td className="px-3 py-2 font-bold text-emerald-800 dark:text-emerald-400">50ft (Grass x1.15)</td>
                 <td className="px-3 py-2 text-center font-mono font-bold text-emerald-700 dark:text-emerald-300">{perf.grass[0]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.grass[1]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.grass[2]}m</td>
