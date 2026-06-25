@@ -7,7 +7,7 @@ import { CookieJar } from 'tough-cookie';
 import * as cheerio from 'cheerio';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 app.use(express.json());
 
