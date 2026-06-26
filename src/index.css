@@ -34,3 +34,13 @@
 .label-micro {
   @apply text-[10px] font-bold text-slate-400 uppercase tracking-widest;
 }
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

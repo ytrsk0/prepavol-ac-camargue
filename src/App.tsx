@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
+import { Eye,  
   Plane, 
   Users, 
   Briefcase, 
@@ -23,9 +23,6 @@ import {
   BookOpen
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { collection, onSnapshot, query } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
-import { db, auth } from './lib/firebase';
 import { FLEET } from './data/fleet';
 import { calculateWeightAndBalance, calculateAltitudes, predictDistance } from './lib/calculations';
 import { FlightPrepData, PerformanceResult, Fleet as FleetType } from './types/aviation';
@@ -83,30 +80,7 @@ export default function App() {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
-  // Auth & Sync
-  useEffect(() => {
-    const unsubAuth = onAuthStateChanged(auth, (u) => setUser(u));
-    
-    const q = query(collection(db, 'fleet'));
-    const unsubFleet = onSnapshot(q, (snapshot) => {
-      const remoteFleet: FleetType = {};
-      snapshot.docs.forEach(doc => {
-        remoteFleet[doc.id] = doc.data() as any;
-      });
-      
-      if (Object.keys(remoteFleet).length > 0) {
-        setFleet(remoteFleet);
-      }
-    }, (error) => {
-      console.error('Firestore sync error:', error);
-    });
-
-    return () => {
-      unsubAuth();
-      unsubFleet();
-    };
-  }, []);
-
+  
   const plane = useMemo(() => fleet[data.callsign] || Object.values(fleet)[0], [fleet, data.callsign]);
 
   // Clear invalid data when plane changes
@@ -184,7 +158,7 @@ export default function App() {
       <Report plane={plane} data={data} wb={wb} tkPerf={tkPerf} ldPerf={ldPerf} />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between shadow-sm print:hidden transition-colors duration-200">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 md:px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm print:hidden transition-colors duration-200">
         <div className="flex items-center gap-3">
           <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-200 dark:shadow-none">
             <Plane className="text-white w-6 h-6" />
@@ -195,7 +169,7 @@ export default function App() {
           </div>
         </div>
 
-        <nav className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl transition-colors">
+        <nav className="flex items-center w-full md:w-auto overflow-x-auto justify-start md:justify-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl transition-colors hide-scrollbar">
           <button 
             onClick={() => setActiveTab('prep')}
             className={cn(
@@ -217,7 +191,7 @@ export default function App() {
                 : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             )}
           >
-            <Settings className="w-4 h-4" />
+            <Eye className="w-4 h-4" />
             Fleet
           </button>
           <button 
@@ -540,7 +514,7 @@ export default function App() {
                       <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">1. Flight Preparation Guide</h3>
                       <div className="text-xs text-slate-600 dark:text-slate-400 space-y-3 leading-relaxed">
                         <p>
-                          <strong>Prepavol v2.0</strong> is optimized for precise pre-flight weight, balance, and performance estimations.
+                          <strong>Prepavol v2</strong> is optimized for precise pre-flight weight, balance, and performance estimations.
                         </p>
                         <ul className="list-disc pl-4 space-y-1.5">
                           <li><strong>Mass & Balance:</strong> Ensure the total weight remains under the MTOW of the selected aircraft. The CG must reside inside the envelope polygon bounds.</li>
@@ -550,88 +524,34 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div>
-                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">2. Fleet Specifications</h3>
-                      <div className="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-800">
-                        <table className="w-full text-left text-[11px] border-collapse">
-                          <thead>
-                            <tr className="bg-slate-50 dark:bg-slate-800 text-slate-500 uppercase font-semibold">
-                              <th className="px-3 py-2">Callsign</th>
-                              <th className="px-3 py-2">Type</th>
-                              <th className="px-3 py-2 text-right">BEW</th>
-                              <th className="px-3 py-2 text-right">MTOW</th>
-                              <th className="px-3 py-2 text-right">Fuel Cons.</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                            <tr>
-                              <td className="px-3 py-2 font-bold text-blue-600">F-HAAC</td>
-                              <td className="px-3 py-2">DR400-120</td>
-                              <td className="px-3 py-2 text-right">586.0 kg</td>
-                              <td className="px-3 py-2 text-right">900 kg</td>
-                              <td className="px-3 py-2 text-right">25 L/h</td>
-                            </tr>
-                            <tr>
-                              <td className="px-3 py-2 font-bold text-blue-600">F-GGXD</td>
-                              <td className="px-3 py-2">DR400-120</td>
-                              <td className="px-3 py-2 text-right">595.9 kg</td>
-                              <td className="px-3 py-2 text-right">900 kg</td>
-                              <td className="px-3 py-2 text-right">25 L/h</td>
-                            </tr>
-                            <tr>
-                              <td className="px-3 py-2 font-bold text-blue-600">F-BUPS</td>
-                              <td className="px-3 py-2">DR400-140B</td>
-                              <td className="px-3 py-2 text-right">593.5 kg</td>
-                              <td className="px-3 py-2 text-right">1000 kg</td>
-                              <td className="px-3 py-2 text-right">32 L/h</td>
-                            </tr>
-                            <tr>
-                              <td className="px-3 py-2 font-bold text-blue-600">F-BXEQ</td>
-                              <td className="px-3 py-2">DR400-140</td>
-                              <td className="px-3 py-2 text-right">584.0 kg</td>
-                              <td className="px-3 py-2 text-right">1000 kg</td>
-                              <td className="px-3 py-2 text-right">28 L/h</td>
-                            </tr>
-                            <tr>
-                              <td className="px-3 py-2 font-bold text-blue-600">F-HFNG</td>
-                              <td className="px-3 py-2">S200</td>
-                              <td className="px-3 py-2 text-right">481.0 kg</td>
-                              <td className="px-3 py-2 text-right">750 kg</td>
-                              <td className="px-3 py-2 text-right">20 L/h</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
+                    
                   </div>
 
-                  {/* Right Column: Admin Requirements & Security */}
+                  {/* Right Column: Editing the Fleet */}
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">3. Fleet Administrator Login</h3>
+                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">2. Editing the Fleet</h3>
                       <div className="text-xs text-slate-600 dark:text-slate-400 space-y-3 leading-relaxed">
                         <p>
-                          Administrators can add, edit, or remove airplanes from the fleet. Changes sync directly to the cloud database and are immediately reflected for all pilots.
+                          The fleet configuration and airplane grids are managed directly in the code repository. This ensures version control, peer review, and a single source of truth for all aircraft performance numbers.
                         </p>
-                        <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl">
-                          <h4 className="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5 mb-1.5">
-                            <AlertTriangle className="w-4 h-4" />
-                            Admin Authentication Requirements
+                        <div className="p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 rounded-xl">
+                          <h4 className="font-bold text-blue-800 dark:text-blue-300 flex items-center gap-1.5 mb-1.5">
+                            <Info className="w-4 h-4" />
+                            How to submit changes
                           </h4>
-                          <ul className="list-disc pl-4 space-y-1 text-amber-900/80 dark:text-amber-400/80">
-                            <li><strong>Provider:</strong> Firebase Authentication with Google Login is required.</li>
-                            <li><strong>Authorized Email:</strong> The Google account email must be exactly <code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded text-[10px]">yannick.teresiak@gmail.com</code></li>
-                            <li><strong>Verification:</strong> The Google account email must be verified (<code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded text-[10px]">email_verified == true</code>).</li>
-                          </ul>
+                          <ol className="list-decimal pl-4 space-y-1 text-blue-900/80 dark:text-blue-400/80">
+                            <li>Go to the <a href="https://github.com/ytrsk0/prepavol-ac-camargue.git" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-blue-600">GitHub Repository</a>.</li>
+                            <li>Locate the fleet configuration data inside <code>src/data/fleet.ts</code>.</li>
+                            <li>Create a Pull Request with the updated data. Include references from the official POH if modifying weights, balance envelopes, or performance grids.</li>
+                            <li>Once approved and merged, the changes are automatically deployed.</li>
+                          </ol>
                         </div>
-                        <p>
-                          Firestore Security Rules enforce these checks server-side. Any unauthenticated or unauthorized write requests will be rejected by the database.
-                        </p>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">4. POH Model Parity & Regression</h3>
+                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">3. POH Model Parity & Regression</h3>
                       <div className="text-xs text-slate-600 dark:text-slate-400 space-y-3 leading-relaxed">
                         <p>
                           Performance estimation is powered by a stable multivariate first-degree linear regression with Ridge regularization (<code className="font-mono bg-slate-100 dark:bg-slate-800 px-1 rounded text-[10px]">&lambda; = 1e-4</code>):
@@ -665,12 +585,12 @@ export default function App() {
       <footer className="max-w-7xl mx-auto px-6 py-12 border-t border-slate-200 dark:border-slate-800 mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 text-slate-400 print:hidden transition-colors">
         <div className="flex items-center gap-2">
           <Plane className="w-5 h-5" />
-          <span className="text-sm font-bold">Prepavol v2.0</span>
+          <a href="https://github.com/ytrsk0/prepavol-ac-camargue.git" target="_blank" rel="noopener noreferrer" className="text-sm font-bold hover:text-blue-600 transition-colors">Prepavol v2</a>
         </div>
         <p className="text-xs">© 2024 Yannick Teresiak • Built for Aéroclub de Camargue Pilots</p>
         <div className="flex items-center gap-6">
-          <a href="#documentation" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Documentation</a>
-          <a href="#" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Support</a>
+          <button onClick={() => setActiveTab('docs')} className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Documentation</button>
+          <a href="mailto:yannick.teresiak@gmail.com" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Support</a>
         </div>
       </footer>
     </div>

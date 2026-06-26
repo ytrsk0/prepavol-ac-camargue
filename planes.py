@@ -25,7 +25,6 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 
 __all__ = ["WeightBalance", "PlanePerf"]
@@ -1029,7 +1028,7 @@ class PlanePerf:
         elif operation == "landing":
             data_df = self.landing_data()
 
-        model = make_pipeline(PolynomialFeatures(2), LinearRegression())
+        model = LinearRegression()
         _ = model.fit(data_df.iloc[:, :3], data_df.iloc[:, 3])
 
         return model
