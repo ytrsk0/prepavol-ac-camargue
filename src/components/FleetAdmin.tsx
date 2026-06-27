@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Fleet, PlaneDefinition } from '../types/aviation';
 import { cn } from '../lib/utils';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface FleetAdminProps {
   fleet: Fleet;
@@ -23,6 +24,7 @@ interface FleetAdminProps {
 }
 
 export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) => {
+  const { t } = useTranslation();
   const [editingCallsign, setEditingCallsign] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<PlaneDefinition | null>(null);
 
@@ -39,16 +41,14 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
             <Info className="w-6 h-6 text-blue-600" />
             Fleet Management
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">View aircraft characteristics, weight limits, and CG envelopes.</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">{t("fleetDesc")}</p>
         </div>
       </div>
 
       {editingCallsign && editForm ? (
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
           <div className="p-6 border-b border-slate-100 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-950 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900 dark:text-white">
-              Viewing {editingCallsign}
-            </h3>
+            <h3 className="font-bold text-slate-900 dark:text-white">{t("viewing")} {editingCallsign}</h3>
             <div className="flex items-center gap-2">
               <button onClick={() => setEditingCallsign(null)} className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition-all">
                 <X className="w-4 h-4" />
@@ -60,18 +60,18 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
               
               {/* 1. General Information */}
               <section className="space-y-4">
-                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">1. General Information</h4>
+                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t("generalInformation")}</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Plane Type</label>
+                    <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("planeType")}</label>
                     <input disabled={true} type="text" value={editForm.planetype} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Number of Seats</label>
+                    <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("numberOfSeats")}</label>
                     <input disabled={true} type="number" value={editForm.numSeats} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Fuel Rate (L/h)</label>
+                    <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("fuelRate")}</label>
                     <input disabled={true} type="number" value={editForm.fuelrate} className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                   </div>
                 </div>
@@ -79,35 +79,35 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
 
               {/* 2. Mass & Balance Limits */}
               <section className="space-y-4">
-                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">2. Mass & Balance Limits</h4>
+                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t("massBalanceLimits")}</h4>
                 <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/50 space-y-6">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">MTOW (kg)</label>
+                      <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("mtow")}</label>
                       <input disabled={true} type="number" value={editForm.mtow} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">BEW (kg)</label>
+                      <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("bew")}</label>
                       <input disabled={true} type="number" value={editForm.bew} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">BEW Arm (m)</label>
+                      <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("bewArm")}</label>
                       <input disabled={true} type="number" value={editForm.arms.bew} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-4 border-t border-slate-200 dark:border-slate-800">
                     <div className="space-y-3">
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Front Seats</p>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{t('frontSeats')}</p>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Arm (m)</label>
+                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("armM")}</label>
                         <input disabled={true} type="number" value={editForm.arms.front} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Rear Seats</p>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{t('rearSeats')}</p>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Arm (m)</label>
+                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("armM")}</label>
                         <input disabled={true} type="number" value={editForm.arms.rear} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                       </div>
                     </div>
@@ -115,35 +115,35 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-4 border-t border-slate-200 dark:border-slate-800">
                     <div className="space-y-3">
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Baggage 1</p>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{t('baggage1')}</p>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Max (kg)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("maxKg")}</label>
                           <input disabled={true} type="number" value={editForm.bagmax} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Arm (m)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("armM")}</label>
                           <input disabled={true} type="number" value={editForm.arms.baggage} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Baggage 2</p>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{t('baggage2')}</p>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Max (kg)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("maxKg")}</label>
                           <input disabled={true} type="number" value={editForm.bagmax2} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Arm (m)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("armM")}</label>
                           <input disabled={true} type="number" value={editForm.arms.baggage2} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Sum Baggage</p>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{t("sumBaggage")}</p>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Max (kg)</label>
+                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("maxKg")}</label>
                         <input disabled={true} type="number" value={editForm.sumbagmax} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                       </div>
                     </div>
@@ -151,52 +151,52 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-4 border-t border-slate-200 dark:border-slate-800">
                     <div className="space-y-3">
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Main Fuel</p>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{t('mainFuel')}</p>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Max (L)</label>
+                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("maxL")}</label>
                         <input disabled={true} type="number" value={editForm.maxmainfuel} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Unus. (L)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("unusableL")}</label>
                           <input disabled={true} type="number" value={editForm.unusable_mainfuel} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Arm (m)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("armM")}</label>
                           <input disabled={true} type="number" value={editForm.arms.mainfuel} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Wing Fuel</p>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{t('wingFuel')}</p>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Max (L)</label>
+                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("maxL")}</label>
                         <input disabled={true} type="number" value={editForm.maxwingfuel} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Unus. (L)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("unusableL")}</label>
                           <input disabled={true} type="number" value={editForm.unusable_wingfuel} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Arm (m)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("armM")}</label>
                           <input disabled={true} type="number" value={editForm.arms.wingfuel} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Aux Fuel</p>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{t('auxFuel')}</p>
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Max (L)</label>
+                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("maxL")}</label>
                         <input disabled={true} type="number" value={editForm.maxauxfuel} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Unus. (L)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("unusableL")}</label>
                           <input disabled={true} type="number" value={editForm.unusable_auxfuel} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Arm (m)</label>
+                          <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("armM")}</label>
                           <input disabled={true} type="number" value={editForm.arms.auxfuel} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                       </div>
@@ -208,18 +208,18 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
               {/* 3. CG Envelope */}
               <section className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">3. CG Envelope (Utility Category)</h4>
+                  <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t("cgEnvelope")}</h4>
                 </div>
                 <div className="space-y-3">
                   {editForm.envelope.map((point, idx) => (
                     <div key={idx} className="flex items-center gap-3 bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-100 dark:border-slate-800/50 group">
                       <div className="flex-1 grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">CG (m)</label>
+                          <label className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("cgM")}</label>
                           <input disabled={true} type="number" value={point[0]} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">Weight (kg)</label>
+                          <label className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("weightKg")}</label>
                           <input disabled={true} type="number" value={point[1]} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2 py-1.5 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none" />
                         </div>
                       </div>
@@ -227,7 +227,7 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
                   ))}
                   {editForm.envelope.length === 0 && (
                     <div className="text-center py-8 bg-slate-50 dark:bg-slate-950 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800">
-                      <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">No envelope points defined.</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">{t("noEnvelopePoints")}</p>
                     </div>
                   )}
                 </div>
@@ -235,10 +235,10 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
               
               {/* 4. Performance Grids */}
               <section className="space-y-4">
-                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">4. Performance Grids</h4>
+                <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t("performanceGrids")}</h4>
                 <div className="space-y-6">
-                  <GridEditor label="Takeoff 50ft Grid" value={editForm.takeoff50ftGrid} />
-                  <GridEditor label="Landing 50ft Grid" value={editForm.landing50ftGrid} />
+                  <GridEditor label={t("takeoff50ftGrid")} value={editForm.takeoff50ftGrid} />
+                  <GridEditor label={t("landing50ftGrid")} value={editForm.landing50ftGrid} />
                 </div>
               </section>
             </div>
@@ -267,11 +267,11 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
                 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-slate-50 dark:bg-slate-950 p-2 rounded-lg border border-slate-100 dark:border-slate-800/50">
-                    <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">BEW</p>
+                    <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("bew").replace(" (kg)", "")}</p>
                     <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{plane.bew} kg</p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-950 p-2 rounded-lg border border-slate-100 dark:border-slate-800/50">
-                    <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">MTOW</p>
+                    <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("mtow").replace(" (kg)", "")}</p>
                     <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{plane.mtow} kg</p>
                   </div>
                 </div>
@@ -285,8 +285,9 @@ export const FleetAdmin: React.FC<FleetAdminProps> = ({ fleet, onUpdateFleet }) 
 };
 
 function GridEditor({ label, value }: { label: string, value: any }) {
+  const { t } = useTranslation();
   if (!value || !Array.isArray(value) || value.length === 0) {
-    return <div className="text-xs text-slate-500">No data</div>;
+    return <div className="text-xs text-slate-500">{t("noData")}</div>;
   }
 
   const weights = Object.keys(value[0].distances || {}).sort((a,b) => Number(a)-Number(b));
@@ -298,7 +299,7 @@ function GridEditor({ label, value }: { label: string, value: any }) {
         <table className="w-full text-[10px] text-right whitespace-nowrap">
           <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-500 uppercase">
             <tr>
-              <th className="px-2 py-1.5 text-left font-semibold">Alt/Temp</th>
+              <th className="px-2 py-1.5 text-left font-semibold">{t("altTemp")}</th>
               {weights.map(w => (
                 <th key={w} className="px-2 py-1.5 font-semibold">{w} kg</th>
               ))}

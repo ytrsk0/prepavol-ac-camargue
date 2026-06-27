@@ -30,6 +30,8 @@ import { EnvelopeChart } from './components/EnvelopeChart';
 import { FleetAdmin } from './components/FleetAdmin';
 import { Report } from './components/Report';
 import { cn, formatDuration } from './lib/utils';
+import { TranslationContext, useTranslation } from './hooks/useTranslation';
+import { translations, Locale } from './locales';
 
 const INITIAL_DATA: FlightPrepData = {
   callsign: 'FBUPS',
@@ -57,6 +59,9 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'prep' | 'fleet' | 'docs'>('prep');
   const [statsData, setStatsData] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
+  const [locale, setLocale] = useState<Locale>('fr');
+  const t = (key: keyof typeof translations['en']) => translations[locale][key] || key as string;
+
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
       return (localStorage.getItem('theme') as 'light' | 'dark') || 'light';
@@ -153,6 +158,7 @@ export default function App() {
   };
 
   return (
+    <TranslationContext.Provider value={{ locale, setLocale, t }}>
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-blue-100 dark:selection:bg-blue-900/30 print:bg-white transition-colors duration-200">
       {/* Printable Report */}
       <Report plane={plane} data={data} wb={wb} tkPerf={tkPerf} ldPerf={ldPerf} />
@@ -165,7 +171,7 @@ export default function App() {
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Prepavol <span className="text-blue-600 dark:text-blue-400">v2</span></h1>
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-widest">Flight Preparation Suite</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-widest">{t('appTitle')}</p>
           </div>
         </div>
 
@@ -180,7 +186,7 @@ export default function App() {
             )}
           >
             <Navigation className="w-4 h-4" />
-            Preparation
+            {t('preparationTab')}
           </button>
           <button 
             onClick={() => setActiveTab('fleet')}
@@ -192,7 +198,7 @@ export default function App() {
             )}
           >
             <Eye className="w-4 h-4" />
-            Fleet
+            {t('fleetTab')}
           </button>
           <button 
             onClick={() => setActiveTab('docs')}
@@ -204,22 +210,29 @@ export default function App() {
             )}
           >
             <BookOpen className="w-4 h-4" />
-            Documentation
+            {t('documentationTab')}
           </button>
         </nav>
 
         <div className="flex items-center gap-4">
           <button 
+            onClick={() => setLocale(locale === 'fr' ? 'en' : 'fr')}
+            className="p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 rounded-lg transition-colors font-bold text-sm uppercase"
+            title={locale === 'fr' ? "Switch to English" : "Passer en Français"}
+          >
+            {locale}
+          </button>
+          <button 
             onClick={toggleTheme}
             className="p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 rounded-lg transition-colors"
-            title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            title={theme === 'dark' ? t('switchToLightMode') : t('switchToDarkMode')}
           >
             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
           <button 
             onClick={handlePrint}
             className="p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 rounded-lg transition-colors"
-            title="Print Flight Plan"
+            title={t('printFlightPlan')}
           >
             <Printer className="w-5 h-5" />
           </button>
@@ -227,7 +240,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Yannick Teresiak</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Pilot • Aéroclub de Camargue</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('pilot')} • {t('aeroclub')}</p>
             </div>
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 border-2 border-white dark:border-slate-800 shadow-md" />
           </div>
@@ -250,12 +263,12 @@ export default function App() {
           <section className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-colors duration-200">
             <div className="flex items-center gap-2 mb-6">
               <Plane className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Aircraft Configuration</h2>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("aircraftConfiguration")}</h2>
             </div>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5 ml-1">Select Aircraft</label>
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5 ml-1">{t("selectAircraft")}</label>
                 <select 
                   name="callsign"
                   value={data.callsign}
@@ -270,11 +283,11 @@ export default function App() {
 
               <div className="grid grid-cols-2 gap-4 pt-2">
                 <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 transition-colors">
-                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Empty Weight</p>
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("emptyWeight")}</p>
                   <p className="text-lg font-bold text-slate-700 dark:text-slate-300">{plane.bew} kg</p>
                 </div>
                 <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 transition-colors">
-                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">MTOW</p>
+                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">{t("mtow")}</p>
                   <p className="text-lg font-bold text-slate-700 dark:text-slate-300">{plane.mtow} kg</p>
                 </div>
               </div>
@@ -285,35 +298,35 @@ export default function App() {
           <section className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-colors duration-200">
             <div className="flex items-center gap-2 mb-6">
               <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Loading & Fuel</h2>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("loadingAndFuel")}</h2>
             </div>
 
             <div className="space-y-6">
               {/* Passengers */}
               <div className="grid grid-cols-2 gap-4">
-                <WeightInput label="Pilot (L)" name="pax0" value={data.pax0} onChange={handleInputChange} icon={<Users className="w-3.5 h-3.5" />} />
-                <WeightInput label="Pax Front (R)" name="pax1" value={data.pax1} onChange={handleInputChange} icon={<Users className="w-3.5 h-3.5" />} />
+                <WeightInput label={t("pilotL")} name="pax0" value={data.pax0} onChange={handleInputChange} icon={<Users className="w-3.5 h-3.5" />} />
+                <WeightInput label={t("paxFrontR")} name="pax1" value={data.pax1} onChange={handleInputChange} icon={<Users className="w-3.5 h-3.5" />} />
                 
                 {plane.numSeats > 2 && (
                   <>
-                    <WeightInput label="Pax Rear (L)" name="pax2" value={data.pax2} onChange={handleInputChange} icon={<Users className="w-3.5 h-3.5" />} />
-                    <WeightInput label="Pax Rear (R)" name="pax3" value={data.pax3} onChange={handleInputChange} icon={<Users className="w-3.5 h-3.5" />} />
+                    <WeightInput label={t("paxRearL")} name="pax2" value={data.pax2} onChange={handleInputChange} icon={<Users className="w-3.5 h-3.5" />} />
+                    <WeightInput label={t("paxRearR")} name="pax3" value={data.pax3} onChange={handleInputChange} icon={<Users className="w-3.5 h-3.5" />} />
                   </>
                 )}
               </div>
 
               {/* Baggage */}
               <div className="grid grid-cols-2 gap-4">
-                <WeightInput label="Baggage 1" name="baggage" value={data.baggage} max={plane.bagmax} onChange={handleInputChange} icon={<Briefcase className="w-3.5 h-3.5" />} />
+                <WeightInput label={t("baggage1")} name="baggage" value={data.baggage} max={plane.bagmax} onChange={handleInputChange} icon={<Briefcase className="w-3.5 h-3.5" />} />
                 {plane.bagmax2 > 0 && (
-                  <WeightInput label="Baggage 2" name="baggage2" value={data.baggage2} max={plane.bagmax2} onChange={handleInputChange} icon={<Briefcase className="w-3.5 h-3.5" />} />
+                  <WeightInput label={t("baggage2")} name="baggage2" value={data.baggage2} max={plane.bagmax2} onChange={handleInputChange} icon={<Briefcase className="w-3.5 h-3.5" />} />
                 )}
               </div>
 
               {/* Fuel */}
               <div className="space-y-4 pt-2">
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Fuel Tanks (Liters)</label>
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">{t("fuelTanksLiters")}</label>
                   <div className="flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 rounded-full transition-colors">
                     <Fuel className="w-3 h-3" />
                     0.72 kg/L
@@ -322,16 +335,16 @@ export default function App() {
                 
                 <div className="space-y-3">
                   {plane.maxmainfuel > 0 && (
-                    <FuelSlider label="Main Tank" name="mainfuel" value={data.mainfuel} max={plane.maxmainfuel} onChange={handleInputChange} />
+                    <FuelSlider label={t("mainTank")} name="mainfuel" value={data.mainfuel} max={plane.maxmainfuel} onChange={handleInputChange} />
                   )}
                   {plane.maxwingfuel > 0 && (
                     <div className="grid grid-cols-2 gap-4">
-                      <FuelSlider label="Left Wing" name="leftwingfuel" value={data.leftwingfuel} max={plane.maxwingfuel} onChange={handleInputChange} />
-                      <FuelSlider label="Right Wing" name="rightwingfuel" value={data.rightwingfuel} max={plane.maxwingfuel} onChange={handleInputChange} />
+                      <FuelSlider label={t("leftWing")} name="leftwingfuel" value={data.leftwingfuel} max={plane.maxwingfuel} onChange={handleInputChange} />
+                      <FuelSlider label={t("rightWing")} name="rightwingfuel" value={data.rightwingfuel} max={plane.maxwingfuel} onChange={handleInputChange} />
                     </div>
                   )}
                   {plane.maxauxfuel > 0 && (
-                    <FuelSlider label="Auxiliary" name="auxfuel" value={data.auxfuel} max={plane.maxauxfuel} onChange={handleInputChange} />
+                    <FuelSlider label={t("auxiliary")} name="auxfuel" value={data.auxfuel} max={plane.maxauxfuel} onChange={handleInputChange} />
                   )}
                 </div>
               </div>
@@ -342,12 +355,12 @@ export default function App() {
           <section className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 transition-colors duration-200">
             <div className="flex items-center gap-2 mb-6">
               <CloudRain className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Environmental Conditions</h2>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("environmentalConditions")}</h2>
             </div>
 
             <div className="space-y-6">
               <div className="p-4 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-slate-100 dark:border-slate-800 space-y-4 transition-colors">
-                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase mb-2">Take-off Site</p>
+                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase mb-2">{t("takeoffSite")}</p>
                 <div className="grid grid-cols-3 gap-3">
                   <EnvInput label="Alt (ft)" name="tkalt" value={data.tkalt} onChange={handleInputChange} icon={<Navigation className="w-3 h-3" />} />
                   <EnvInput label="Temp (°C)" name="tktemp" value={data.tktemp} onChange={handleInputChange} icon={<Thermometer className="w-3 h-3" />} />
@@ -356,7 +369,7 @@ export default function App() {
               </div>
 
               <div className="p-4 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-slate-100 dark:border-slate-800 space-y-4 transition-colors">
-                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase mb-2">Landing Site</p>
+                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase mb-2">{t("landingSite")}</p>
                 <div className="grid grid-cols-3 gap-3">
                   <EnvInput label="Alt (ft)" name="ldalt" value={data.ldalt} onChange={handleInputChange} icon={<Navigation className="w-3 h-3" />} />
                   <EnvInput label="Temp (°C)" name="ldtemp" value={data.ldtemp} onChange={handleInputChange} icon={<Thermometer className="w-3 h-3" />} />
@@ -372,7 +385,7 @@ export default function App() {
           {/* Status Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatusCard 
-              label="All-Up Weight" 
+              label={t("allUpWeight")} 
               value={`${wb.totalWeight.toFixed(1)} kg`} 
               isValid={!wb.isOverweight} 
               errorMsg={wb.isOverweight ? `Exceeds MTOW by ${(wb.totalWeight - plane.mtow).toFixed(1)}kg` : null}
@@ -384,7 +397,7 @@ export default function App() {
                 : "bg-rose-50 border-rose-200 dark:bg-rose-950/30 dark:border-rose-900/40 shadow-lg shadow-rose-100 dark:shadow-none"
             )}>
               <div className="flex items-center justify-between mb-1">
-                <p className={cn("text-[10px] font-bold uppercase tracking-wider", wb.enduranceMinutes > 45 ? "text-slate-400 dark:text-slate-500" : "text-rose-400 dark:text-rose-400")}>VFR Day Endurance</p>
+                <p className={cn("text-[10px] font-bold uppercase tracking-wider", wb.enduranceMinutes > 45 ? "text-slate-400 dark:text-slate-500" : "text-rose-400 dark:text-rose-400")}>{t("vfrDayEndurance")}</p>
                 <Timer className={cn("w-4 h-4", wb.enduranceMinutes > 45 ? "text-emerald-500" : "text-rose-500")} />
               </div>
               <div className="flex items-baseline gap-2">
@@ -392,11 +405,11 @@ export default function App() {
               </div>
               <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 space-y-1">
                 <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-wider">
-                  <span className="text-slate-400 dark:text-slate-500">VFR Night</span>
+                  <span className="text-slate-400 dark:text-slate-500">{t("vfrNight")}</span>
                   <span className="text-indigo-600 dark:text-indigo-400">{formatDuration(wb.nightFlyingMinutes)}</span>
                 </div>
                 <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-wider">
-                  <span className="text-slate-400 dark:text-slate-500">Total Endurance</span>
+                  <span className="text-slate-400 dark:text-slate-500">{t("totalEndurance")}</span>
                   <span className="text-slate-500 dark:text-slate-400">{formatDuration(wb.enduranceMinutes)}</span>
                 </div>
               </div>
@@ -411,17 +424,17 @@ export default function App() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <StatusCard 
-              label="Loaded CG" 
+              label={t("loadedCg")} 
               value={`${wb.cg.toFixed(2)} m`} 
               isValid={wb.isCgValid}
-              subValue="Full Fuel"
+              subValue={t("fullFuel")}
               icon={<Users className="w-4 h-4" />}
             />
             <StatusCard 
-              label="Zero Fuel CG" 
+              label={t("zeroFuelCg")} 
               value={`${wb.cgNoFuel.toFixed(2)} m`} 
               isValid={wb.isCgNoFuelValid}
-              subValue="Post-Flight"
+              subValue={t("postFlight")}
               icon={<Fuel className="w-4 h-4" />}
             />
           </div>
@@ -431,16 +444,16 @@ export default function App() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <Navigation className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Weight & Balance Envelope</h2>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t("wbEnvelope")}</h2>
               </div>
               <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-blue-500" />
-                  <span>Current</span>
+                  <span>{t("current")}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 bg-slate-400 rotate-45" />
-                  <span>Zero Fuel</span>
+                  <span>{t("zeroFuel")}</span>
                 </div>
               </div>
             </div>
@@ -456,12 +469,12 @@ export default function App() {
           {/* Performance Predictions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <PerformanceCard 
-              title="Take-off Performance" 
+              title={t("takeoffPerformance")} 
               type="takeoff"
               perf={tkPerf}
             />
             <PerformanceCard 
-              title="Landing Performance" 
+              title={t("landingPerformance")} 
               type="landing"
               perf={ldPerf}
             />
@@ -470,9 +483,9 @@ export default function App() {
           {/* Documentation / Info */}
           <section className="bg-blue-600 p-8 rounded-2xl shadow-xl shadow-blue-200 text-white relative overflow-hidden">
             <div className="relative z-10">
-              <h2 className="text-2xl font-bold mb-4">Safety First</h2>
+              <h2 className="text-2xl font-bold mb-4">{t("safetyFirst")}</h2>
               <p className="text-blue-100 text-sm leading-relaxed max-w-2xl mb-6">
-                This tool is an aid for flight preparation. The Commander (CDB) remains solely responsible for the final weight and balance verification. Always cross-check results with the official Pilot Operating Handbook (POH).
+                {t("flightPrepDisclaimerText")}
               </p>
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10 text-xs font-semibold">
@@ -511,15 +524,15 @@ export default function App() {
                   {/* Left Column: User Guide & Calculations */}
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">1. Flight Preparation Guide</h3>
+                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">{t("flightPreparationGuide")}</h3>
                       <div className="text-xs text-slate-600 dark:text-slate-400 space-y-3 leading-relaxed">
                         <p>
-                          <strong>Prepavol v2</strong> is optimized for precise pre-flight weight, balance, and performance estimations.
+                          <strong>Prepavol v2</strong> {t("flightPrepDesc1")}
                         </p>
                         <ul className="list-disc pl-4 space-y-1.5">
-                          <li><strong>Mass & Balance:</strong> Ensure the total weight remains under the MTOW of the selected aircraft. The CG must reside inside the envelope polygon bounds.</li>
-                          <li><strong>Performance Predictions:</strong> Takeoff and landing calculations use a first-degree multivariate linear regression calibrated on the raw POH grids.</li>
-                          <li><strong>Corrections:</strong> All calculations automatically account for density altitude (based on temperature and QNH) and surface factors (e.g., +15% distance for grass runways).</li>
+                          <li><strong>Mass & Balance:</strong> {t("flightPrepList1")}</li>
+                          <li><strong>Performance Predictions:</strong> {t("flightPrepList2")}</li>
+                          <li><strong>Corrections:</strong> {t("flightPrepList3")}</li>
                         </ul>
                       </div>
                     </div>
@@ -530,31 +543,31 @@ export default function App() {
                   {/* Right Column: Editing the Fleet */}
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">2. Editing the Fleet</h3>
+                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">{t("editingTheFleet")}</h3>
                       <div className="text-xs text-slate-600 dark:text-slate-400 space-y-3 leading-relaxed">
                         <p>
-                          The fleet configuration and airplane grids are managed directly in the code repository. This ensures version control, peer review, and a single source of truth for all aircraft performance numbers.
+                          {t("editingFleetDesc")}
                         </p>
                         <div className="p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 rounded-xl">
                           <h4 className="font-bold text-blue-800 dark:text-blue-300 flex items-center gap-1.5 mb-1.5">
                             <Info className="w-4 h-4" />
-                            How to submit changes
+                            {t('howToSubmitChanges')}
                           </h4>
                           <ol className="list-decimal pl-4 space-y-1 text-blue-900/80 dark:text-blue-400/80">
-                            <li>Go to the <a href="https://github.com/ytrsk0/prepavol-ac-camargue.git" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-blue-600">GitHub Repository</a>.</li>
-                            <li>Locate the fleet configuration data inside <code>src/data/fleet.ts</code>.</li>
-                            <li>Create a Pull Request with the updated data. Include references from the official POH if modifying weights, balance envelopes, or performance grids.</li>
-                            <li>Once approved and merged, the changes are automatically deployed.</li>
+                            <li>{t("howToStep1")} <a href="https://github.com/ytrsk0/prepavol-ac-camargue.git" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-blue-600">{t("howToStep1Link")}</a>.</li>
+                            <li>{t("howToStep2")} <code>src/data/fleet.ts</code>.</li>
+                            <li>{t("howToStep3")}</li>
+                            <li>{t("howToStep4")}</li>
                           </ol>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">3. POH Model Parity & Regression</h3>
+                      <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">{t("pohModelParity")}</h3>
                       <div className="text-xs text-slate-600 dark:text-slate-400 space-y-3 leading-relaxed">
                         <p>
-                          Performance estimation is powered by a stable multivariate first-degree linear regression with Ridge regularization (<code className="font-mono bg-slate-100 dark:bg-slate-800 px-1 rounded text-[10px]">&lambda; = 1e-4</code>):
+                          {t("pohModelDesc1")} (<code className="font-mono bg-slate-100 dark:bg-slate-800 px-1 rounded text-[10px]">&lambda; = 1e-4</code>):
                         </p>
                         <p className="font-mono bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400">
                           y = &beta;₀ + &beta;₁Zp + &beta;₂Tk + &beta;₃W
@@ -587,13 +600,14 @@ export default function App() {
           <Plane className="w-5 h-5" />
           <a href="https://github.com/ytrsk0/prepavol-ac-camargue.git" target="_blank" rel="noopener noreferrer" className="text-sm font-bold hover:text-blue-600 transition-colors">Prepavol v2</a>
         </div>
-        <p className="text-xs">© 2024 Yannick Teresiak • Built for Aéroclub de Camargue Pilots</p>
+        <p className="text-xs">© 2024 Yannick Teresiak • {t('builtFor')}</p>
         <div className="flex items-center gap-6">
-          <button onClick={() => setActiveTab('docs')} className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Documentation</button>
-          <a href="mailto:yannick.teresiak@gmail.com" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">Support</a>
+          <button onClick={() => setActiveTab('docs')} className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">{t("documentationTab")}</button>
+          <a href="mailto:yannick.teresiak@gmail.com" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">{t("support")}</a>
         </div>
       </footer>
     </div>
+    </TranslationContext.Provider>
   );
 }
 
@@ -698,6 +712,7 @@ function StatusCard({ label, value, isValid, errorMsg, icon }: any) {
 }
 
 function PerformanceCard({ title, type, perf }: any) {
+  const { t } = useTranslation();
   const [showFormula, setShowFormula] = useState(false);
   
   const c = perf.modelCoeffs || [0, 0, 0, 0];
@@ -731,8 +746,8 @@ function PerformanceCard({ title, type, perf }: any) {
                 <p className="text-emerald-400 font-bold mb-1">// First-Degree Multi-linear Calibration Model</p>
                 <div className="space-y-1">
                   <p>y = β₀ + β₁Zp + β₂Tₖ + β₃W</p>
-                  <p className="text-slate-400">Coeffs: [{c.map((x:any)=>x.toFixed(3)).join(', ')}]</p>
-                  <p className="text-slate-500 italic mt-1">Status: High stability first-degree model matching POH grid boundaries exactly.</p>
+                  <p className="text-slate-400">{t("coeffs")}: [{c.map((x:any)=>x.toFixed(3)).join(', ')}]</p>
+                  <p className="text-slate-500 italic mt-1">{t("modelStatus")}</p>
                 </div>
               </div>
             </div>
@@ -745,7 +760,7 @@ function PerformanceCard({ title, type, perf }: any) {
           <table className="w-full text-[10px] text-left">
             <thead className="bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
               <tr>
-                <th className="px-3 py-2">Metric</th>
+                <th className="px-3 py-2">{t("metric")}</th>
                 <th className="px-3 py-2 text-center">0kts</th>
                 <th className="px-3 py-2 text-center">10kts</th>
                 <th className="px-3 py-2 text-center">20kts</th>
@@ -754,14 +769,14 @@ function PerformanceCard({ title, type, perf }: any) {
             </thead>
             <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
               <tr className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                <td className="px-3 py-2 font-bold text-slate-600 dark:text-slate-300">50ft (Asphalt)</td>
+                <td className="px-3 py-2 font-bold text-slate-600 dark:text-slate-300">{t("distance50ft")} ({t("asphalt")})</td>
                 <td className="px-3 py-2 text-center font-mono font-bold text-indigo-600 dark:text-indigo-400">{perf.asphalt[0]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.asphalt[1]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.asphalt[2]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.asphalt[3]}m</td>
               </tr>
               <tr className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors bg-emerald-50/50 dark:bg-emerald-950/10">
-                <td className="px-3 py-2 font-bold text-emerald-800 dark:text-emerald-400">50ft (Grass x1.15)</td>
+                <td className="px-3 py-2 font-bold text-emerald-800 dark:text-emerald-400">{t("distance50ft")} ({t("grass")})</td>
                 <td className="px-3 py-2 text-center font-mono font-bold text-emerald-700 dark:text-emerald-300">{perf.grass[0]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.grass[1]}m</td>
                 <td className="px-3 py-2 text-center font-mono text-slate-500 dark:text-slate-400">{perf.grass[2]}m</td>
@@ -774,7 +789,7 @@ function PerformanceCard({ title, type, perf }: any) {
         <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-xl border border-blue-100 dark:border-blue-900/50">
           <Info className="w-4 h-4 text-blue-500 dark:text-blue-400" />
           <div className="flex-1">
-            <p className="text-[10px] font-bold text-blue-700 dark:text-blue-300">Density Altitude: {Math.round(perf.zd)} ft</p>
+            <p className="text-[10px] font-bold text-blue-700 dark:text-blue-300">{t("densityAltitude")}: {Math.round(perf.zd)} ft</p>
             <p className="text-[9px] font-medium text-blue-600 dark:text-blue-400 leading-tight mt-0.5">
               Figures predicted using a pure Linear Regression model trained on raw POH data. Headwind and surface adjustment factors match original Robin specifications exactly.
             </p>

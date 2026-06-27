@@ -175,16 +175,8 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
       <ResponsiveContainer width="100%" height="100%">
         {chartElement}
       </ResponsiveContainer>
-      <div className="flex justify-center gap-6 mt-2 text-xs text-slate-500 dark:text-slate-400 print:hidden">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-blue-500" />
-          <span>Current State</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-slate-400 rotate-45" />
-          <span>Zero Fuel State</span>
-        </div>
-      </div>
     </div>
   );
 };
+
+export default EnvelopeChart;
