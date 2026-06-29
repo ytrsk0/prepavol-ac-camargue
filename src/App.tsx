@@ -448,11 +448,11 @@ export default function App() {
               </div>
               <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-blue-500" />
+                  <span className="w-2 h-2 rounded-full bg-green-500" />
                   <span>{t("current")}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 bg-slate-400 rotate-45" />
+                  <span className="w-2 h-2 bg-red-500 rotate-45" />
                   <span>{t("zeroFuel")}</span>
                 </div>
               </div>
