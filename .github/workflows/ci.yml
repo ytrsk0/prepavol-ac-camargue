@@ -71,7 +71,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          IMAGE_PATH="europe-west9-docker.pkg.dev/${{ env.PROJECT_ID }}/ytrsk0/prepavol-ac-camargue/${{ env.SERVICE_NAME }}:${{ github.sha }}"
+          IMAGE_PATH="europe-west9-docker.pkg.dev/${{ env.PROJECT_ID }}/prepavol-ac-camargue/${{ env.SERVICE_NAME }}:${{ github.sha }}"
           docker build -t $IMAGE_PATH .
           docker push $IMAGE_PATH
 
@@ -80,5 +80,5 @@ jobs:
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
-          image: europe-west9-docker.pkg.dev/${{ env.PROJECT_ID }}/ytrsk0/prepavol-ac-camargue/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          image: europe-west9-docker.pkg.dev/${{ env.PROJECT_ID }}/prepavol-ac-camargue/${{ env.SERVICE_NAME }}:${{ github.sha }}
           flags: "--port=3000 --allow-unauthenticated"
