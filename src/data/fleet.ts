@@ -343,7 +343,7 @@ export const FLEET: Fleet = {
   },
   FGGXD: {
     arms: { auxfuel: 0, baggage: 1.9, baggage2: 0, bew: 0.351, front: 0.41, mainfuel: 1.12, wingfuel: 0, rear: 1.19 },
-    bagmax: 40, bagmax2: 0, sumbagmax: 40, bew: 595.9,
+    bagmax: 40, bagmax2: 0, sumbagmax: 40, bew: 579.2,
     envelope: [ [0.205, 550], [0.205, 750], [0.428, 900], [0.564, 900], [0.564, 550] ],
     fuelrate: 25, maxauxfuel: 0, maxmainfuel: 110, maxwingfuel: 0, mtow: 900, planetype: "DR400-120",
     unusable_mainfuel: 10, unusable_wingfuel: 0, unusable_auxfuel: 0, numSeats: 4,
