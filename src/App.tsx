@@ -614,9 +614,10 @@ export default function App() {
 // Sub-components
 
 function WeightInput({ label, name, value, onChange, icon, max }: any) {
+  const isOverMax = max !== undefined && Number(value) > Number(max);
   return (
     <div className="space-y-1.5">
-      <label className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase ml-1">
+      <label className={cn("flex items-center gap-1.5 text-[10px] font-bold uppercase ml-1 transition-colors", isOverMax ? "text-rose-500" : "text-slate-400 dark:text-slate-500")}>
         {icon}
         {label}
       </label>
@@ -626,7 +627,12 @@ function WeightInput({ label, name, value, onChange, icon, max }: any) {
         value={value}
         onChange={onChange}
         max={max}
-        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+        className={cn(
+          "w-full rounded-xl px-3 py-2 text-sm font-bold border outline-none transition-all",
+          isOverMax 
+            ? "bg-rose-50 dark:bg-rose-950/30 border-rose-500 text-rose-700 dark:text-rose-400 focus:ring-2 focus:ring-rose-500" 
+            : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 dark:text-white"
+        )}
       />
     </div>
   );

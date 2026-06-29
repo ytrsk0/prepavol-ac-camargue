@@ -59,13 +59,13 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
   height,
 }) => {
   // Prepare envelope data for the polygon
-  const envelopeData = plane.envelope.map(([x, y]) => ({ x, y }));
+  const envelopeData = plane.envelope.map(([x, y]) => ({ x: Number(x.toFixed(4)), y }));
   
   // Add the first point at the end to close the polygon for the line
   const envelopeLineData = [...envelopeData, envelopeData[0]];
 
-  const currentPoint = [{ x: cg, y: weight }];
-  const noFuelPoint = [{ x: cgNoFuel, y: weightNoFuel }];
+  const currentPoint = [{ x: Number(cg.toFixed(4)), y: weight }];
+  const noFuelPoint = [{ x: Number(cgNoFuel.toFixed(4)), y: weightNoFuel }];
 
   // Calculate bounds to always include envelope and both CG points
   const points = [...plane.envelope.map(p => p[0]), cg, cgNoFuel];
@@ -91,6 +91,7 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
         unit="m" 
         domain={[xMin, xMax]} 
         tick={{ fontSize: 11, fill: labelColor }}
+        tickFormatter={(val) => Number(val.toFixed(4)).toString()}
         stroke={labelColor}
         label={{ value: "Center of Gravity (m)", offset: -10, position: "insideBottom", style: { fill: labelColor, fontSize: '11px', fontWeight: 'bold' } }}
       />
@@ -105,7 +106,7 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
         label={{ value: "Weight (kg)", angle: -90, position: "insideLeft", style: { fill: labelColor, fontSize: '11px', fontWeight: 'bold' } }}
       />
       <ZAxis type="number" range={[100, 100]} />
-      <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+      <Tooltip cursor={{ strokeDasharray: '3 3' }} formatter={(value: number, name: string) => [name === 'CG' ? Number(value.toFixed(4)).toString() : value, name]} />
       
       {/* Envelope Polygon */}
       <Scatter 
