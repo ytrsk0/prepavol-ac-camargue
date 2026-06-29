@@ -102,6 +102,7 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
         unit="kg" 
         domain={[yMin, yMax]}
         tick={{ fontSize: 11, fill: labelColor }}
+        tickFormatter={(val) => Math.round(val).toString()}
         stroke={labelColor}
         label={{ value: "Weight (kg)", angle: -90, position: "insideLeft", style: { fill: labelColor, fontSize: '11px', fontWeight: 'bold' } }}
       />
@@ -181,3 +182,4 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
 };
 
 export default EnvelopeChart;
+
