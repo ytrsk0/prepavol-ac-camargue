@@ -189,11 +189,14 @@ export function interpolateDistance(
     let alt1 = uniqueAlts[0];
     let alt2 = uniqueAlts[uniqueAlts.length - 1];
 
-    if (zp <= alt1) {
+    if (uniqueAlts.length === 1) {
       alt1 = uniqueAlts[0];
       alt2 = uniqueAlts[0];
-    } else if (zp >= alt2) {
-      alt1 = uniqueAlts[uniqueAlts.length - 1];
+    } else if (zp <= uniqueAlts[0]) {
+      alt1 = uniqueAlts[0];
+      alt2 = uniqueAlts[1];
+    } else if (zp >= uniqueAlts[uniqueAlts.length - 1]) {
+      alt1 = uniqueAlts[uniqueAlts.length - 2];
       alt2 = uniqueAlts[uniqueAlts.length - 1];
     } else {
       for (let i = 0; i < uniqueAlts.length - 1; i++) {
@@ -215,18 +218,20 @@ export function interpolateDistance(
       const sortedPoints = [...pointsAtAlt].sort((a, b) => a.temp - b.temp);
       const temps = sortedPoints.map(p => p.temp);
 
-      // Find bounding temperatures
       let t1 = temps[0];
       let t2 = temps[temps.length - 1];
 
       let p1 = sortedPoints[0];
       let p2 = sortedPoints[sortedPoints.length - 1];
 
-      if (tempC <= t1) {
+      if (sortedPoints.length === 1) {
         p1 = sortedPoints[0];
         p2 = sortedPoints[0];
+      } else if (tempC <= t1) {
+        p1 = sortedPoints[0];
+        p2 = sortedPoints[1];
       } else if (tempC >= t2) {
-        p1 = sortedPoints[sortedPoints.length - 1];
+        p1 = sortedPoints[sortedPoints.length - 2];
         p2 = sortedPoints[sortedPoints.length - 1];
       } else {
         for (let i = 0; i < sortedPoints.length - 1; i++) {
@@ -258,10 +263,15 @@ export function interpolateDistance(
   let w1 = uniqueWeights[0];
   let w2 = uniqueWeights[uniqueWeights.length - 1];
 
-  if (auw <= w1) {
-    return interpolateForWeight(w1);
+  if (uniqueWeights.length === 1) {
+    w1 = uniqueWeights[0];
+    w2 = uniqueWeights[0];
+  } else if (auw <= w1) {
+    w1 = uniqueWeights[0];
+    w2 = uniqueWeights[1];
   } else if (auw >= w2) {
-    return interpolateForWeight(w2);
+    w1 = uniqueWeights[uniqueWeights.length - 2];
+    w2 = uniqueWeights[uniqueWeights.length - 1];
   } else {
     for (let i = 0; i < uniqueWeights.length - 1; i++) {
       if (auw >= uniqueWeights[i] && auw <= uniqueWeights[i + 1]) {
@@ -270,13 +280,14 @@ export function interpolateDistance(
         break;
       }
     }
-    const d_w1 = interpolateForWeight(w1);
-    const d_w2 = interpolateForWeight(w2);
-
-    if (w1 === w2) return d_w1;
-    const w_factor = (auw - w1) / (w2 - w1);
-    return d_w1 + w_factor * (d_w2 - d_w1);
   }
+
+  const d_w1 = interpolateForWeight(w1);
+  const d_w2 = interpolateForWeight(w2);
+
+  if (w1 === w2) return d_w1;
+  const w_factor = (auw - w1) / (w2 - w1);
+  return d_w1 + w_factor * (d_w2 - d_w1);
 }
 
 /**
@@ -343,3 +354,4 @@ export function predictDistance(
     trainingPoints: trainingData.length
   };
 }
+
