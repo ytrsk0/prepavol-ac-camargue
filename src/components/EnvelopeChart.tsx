@@ -142,8 +142,8 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
       <Scatter 
         name="Current CG" 
         data={currentPoint} 
-        fill="#2563eb" 
-        stroke="#1e3a8a"
+        fill="#22c55e" 
+        stroke="#166534"
         strokeWidth={2}
         shape={<CurrentPoint />}
       />
@@ -152,8 +152,8 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
       <Scatter 
         name="Zero Fuel CG" 
         data={noFuelPoint} 
-        fill="#475569" 
-        stroke="#0f172a"
+        fill="#ef4444" 
+        stroke="#991b1b"
         strokeWidth={2}
         shape={<ZeroFuelPoint />}
       />
