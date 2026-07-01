@@ -416,7 +416,7 @@ export default function App() {
               {wb.enduranceMinutes <= 45 && (
                 <p className="text-[10px] font-bold text-rose-500 mt-2 flex items-center gap-1">
                   <AlertTriangle className="w-3 h-3" />
-                  Critical Fuel Level
+                  {t("criticalFuelLevel")}
                 </p>
               )}
             </div>
@@ -490,11 +490,11 @@ export default function App() {
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10 text-xs font-semibold">
                   <CheckCircle2 className="w-4 h-4 text-blue-300" />
-                  POH Parity Guaranteed
+                  {t("pohParityGuaranteed")}
                 </div>
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10 text-xs font-semibold">
                   <CheckCircle2 className="w-4 h-4 text-blue-300" />
-                  Real-time Calculations
+                  {t("realTimeCalculations")}
                 </div>
               </div>
             </div>
@@ -735,7 +735,7 @@ function PerformanceCard({ title, type, perf }: any) {
           className="text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 px-2 py-1 rounded-lg transition-colors flex items-center gap-1"
         >
           <Settings className="w-3 h-3" />
-          {showFormula ? 'Hide Formula' : 'Show Formula'}
+          {showFormula ? t("hideFormula") : t("showFormula")}
         </button>
       </div>
 
@@ -749,7 +749,7 @@ function PerformanceCard({ title, type, perf }: any) {
           >
             <div className="p-4 bg-slate-900 rounded-xl text-[10px] font-mono text-slate-300 space-y-3">
               <div>
-                <p className="text-emerald-400 font-bold mb-1">// First-Degree Multi-linear Calibration Model</p>
+                <p className="text-emerald-400 font-bold mb-1">{t("linearModelTitle")}</p>
                 <div className="space-y-1">
                   <p>y = β₀ + β₁Zp + β₂Tₖ + β₃W</p>
                   <p className="text-slate-400">{t("coeffs")}: [{c.map((x:any)=>x.toFixed(3)).join(', ')}]</p>
@@ -797,7 +797,7 @@ function PerformanceCard({ title, type, perf }: any) {
           <div className="flex-1">
             <p className="text-[10px] font-bold text-blue-700 dark:text-blue-300">{t("densityAltitude")}: {Math.round(perf.zd)} ft</p>
             <p className="text-[9px] font-medium text-blue-600 dark:text-blue-400 leading-tight mt-0.5">
-              Figures predicted using a pure Linear Regression model trained on raw POH data. Headwind and surface adjustment factors match original Robin specifications exactly.
+              {t("perfModelInfo")}
             </p>
           </div>
         </div>
@@ -805,3 +805,4 @@ function PerformanceCard({ title, type, perf }: any) {
     </section>
   );
 }
+

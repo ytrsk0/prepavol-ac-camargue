@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   ScatterChart,
   Scatter,
@@ -58,6 +59,8 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
   width,
   height,
 }) => {
+  const { t } = useTranslation();
+
   // Prepare envelope data for the polygon
   const envelopeData = plane.envelope.map(([x, y]) => ({ x: Number(x.toFixed(4)), y }));
   
@@ -93,7 +96,7 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
         tick={{ fontSize: 11, fill: labelColor }}
         tickFormatter={(val) => Number(val.toFixed(4)).toString()}
         stroke={labelColor}
-        label={{ value: "Center of Gravity (m)", offset: -10, position: "insideBottom", style: { fill: labelColor, fontSize: '11px', fontWeight: 'bold' } }}
+        label={{ value: t("centerOfGravityM"), offset: -10, position: "insideBottom", style: { fill: labelColor, fontSize: '11px', fontWeight: 'bold' } }}
       />
       <YAxis 
         type="number" 
@@ -104,14 +107,14 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
         tick={{ fontSize: 11, fill: labelColor }}
         tickFormatter={(val) => Math.round(val).toString()}
         stroke={labelColor}
-        label={{ value: "Weight (kg)", angle: -90, position: "insideLeft", style: { fill: labelColor, fontSize: '11px', fontWeight: 'bold' } }}
+        label={{ value: t("weightKg"), angle: -90, position: "insideLeft", style: { fill: labelColor, fontSize: '11px', fontWeight: 'bold' } }}
       />
       <ZAxis type="number" range={[100, 100]} />
       <Tooltip cursor={{ strokeDasharray: '3 3' }} formatter={(value: number, name: string) => [name === 'CG' ? Number(value.toFixed(4)).toString() : value, name]} />
       
       {/* Envelope Polygon */}
       <Scatter 
-        name="Envelope" 
+        name={t("envelopeTooltip")} 
         data={envelopeLineData} 
         fill="transparent" 
         line={{ stroke: '#2563eb', strokeWidth: 2 }}
@@ -124,12 +127,12 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
         stroke="#dc2626" 
         strokeDasharray="5 5"
         strokeWidth={1.5}
-        label={{ value: "MTOW", position: "top", style: { fill: '#dc2626', fontSize: '10px', fontWeight: 'bold' } }}
+        label={{ value: t("mtow"), position: "top", style: { fill: '#dc2626', fontSize: '10px', fontWeight: 'bold' } }}
       />
 
       {/* Loading Path (Fuel burn) */}
       <Scatter 
-        name="Fuel Burn Path" 
+        name={t("fuelBurnPath")} 
         data={[...currentPoint, ...noFuelPoint]} 
         fill="transparent" 
         stroke="#64748b" 
@@ -141,7 +144,7 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
 
       {/* Current CG Point */}
       <Scatter 
-        name="Current CG" 
+        name={t("currentCGTooltip")} 
         data={currentPoint} 
         fill="#22c55e" 
         stroke="#166534"
@@ -151,7 +154,7 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
 
       {/* Zero Fuel CG Point */}
       <Scatter 
-        name="Zero Fuel CG" 
+        name={t("zeroFuelCGTooltip")} 
         data={noFuelPoint} 
         fill="#ef4444" 
         stroke="#991b1b"

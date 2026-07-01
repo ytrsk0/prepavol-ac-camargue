@@ -63,35 +63,35 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
           </div>
 
           <div className="mt-6">
-            <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">Fuel & Endurance Planning</h2>
+            <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">{t("fuelAndEndurancePlanning")}</h2>
             <table className="w-full text-sm">
               <tbody className="divide-y divide-slate-200">
                 <tr>
-                  <td className="py-1">Total Fuel Capacity</td>
+                  <td className="py-1">{t("totalFuelCapacity")}</td>
                   <td className="text-right font-bold">{(plane.maxmainfuel || 0) + (plane.maxwingfuel || 0) + (plane.maxauxfuel || 0)} L</td>
                 </tr>
                 <tr>
-                  <td className="py-1">Total Fuel Loaded</td>
+                  <td className="py-1">{t("totalFuelLoaded")}</td>
                   <td className="text-right font-bold">{data.mainfuel + data.leftwingfuel + data.rightwingfuel + data.auxfuel} L</td>
                 </tr>
                 <tr>
-                  <td className="py-1">Fuel Weight (Density 0.72)</td>
+                  <td className="py-1">{t("fuelWeight")}</td>
                   <td className="text-right font-bold">{((data.mainfuel + data.leftwingfuel + data.rightwingfuel + data.auxfuel) * 0.72).toFixed(1)} kg</td>
                 </tr>
                 <tr>
-                  <td className="py-1">Fuel Consumption Rate</td>
+                  <td className="py-1">{t("fuelConsumptionRate")}</td>
                   <td className="text-right font-bold">{plane.fuelrate} L/h</td>
                 </tr>
                 <tr className="border-t border-black font-bold">
-                  <td className="py-1.5 uppercase text-black font-extrabold">Total Endurance</td>
+                  <td className="py-1.5 uppercase text-black font-extrabold">{t("totalEnduranceReport")}</td>
                   <td className="py-1.5 text-right text-base text-black font-black">{formatDuration(wb.enduranceMinutes)}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 text-xs">VFR Day Endurance (30m reserve)</td>
+                  <td className="py-1 text-xs">{t("vfrDayEnduranceReport")}</td>
                   <td className="text-right font-bold text-emerald-700 text-xs">{formatDuration(wb.dayFlyingMinutes)}</td>
                 </tr>
                 <tr>
-                  <td className="py-1 text-xs">VFR Night Endurance (45m reserve)</td>
+                  <td className="py-1 text-xs">{t("vfrNightEnduranceReport")}</td>
                   <td className="text-right font-bold text-indigo-700 text-xs">{formatDuration(wb.nightFlyingMinutes)}</td>
                 </tr>
               </tbody>
@@ -168,11 +168,11 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
       </div>
 
       <div className="mt-12 pt-8 border-t border-slate-300 text-[10px] text-slate-500 italic">
-        This report is generated for informational purposes. The Commander (CDB) is responsible for the final verification of all parameters. Distances include 50ft obstacle clearance.
+        {t("informationalReport")}
       </div>
 
       <div className="mt-8 break-before-page">
-        <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">Weight & Balance Envelope</h2>
+        <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">{t("wbEnvelope")}</h2>
         <div className="w-full flex justify-center p-4">
           <EnvelopeChart 
             plane={plane} 
@@ -186,15 +186,16 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
         </div>
         <div className="mt-4 flex justify-center gap-8 text-xs font-bold">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-500" />
-            <span>Current State ({wb.cg.toFixed(2)}m, {wb.totalWeight.toFixed(1)}kg)</span>
+            <div className="w-3 h-3 rounded-full bg-green-500" />
+            <span>{t("currentState")} ({wb.cg.toFixed(2)}m, {wb.totalWeight.toFixed(1)}kg)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-slate-400 rotate-45" />
-            <span>Zero Fuel State ({wb.cgNoFuel.toFixed(2)}m, {wb.totalWeightNoFuel.toFixed(1)}kg)</span>
+            <div className="w-3 h-3 bg-red-500 rotate-45" />
+            <span>{t("zeroFuelState")} ({wb.cgNoFuel.toFixed(2)}m, {wb.totalWeightNoFuel.toFixed(1)}kg)</span>
           </div>
         </div>
       </div>
     </div>
   );
 };
+

@@ -105,6 +105,17 @@ export const translations = {
     groundRoll: "Ground Roll",
     distance50ft: "Distance to 50ft",
     metric: "Metric",
+    fuelAndEndurancePlanning: "Fuel & Endurance Planning",
+    totalFuelCapacity: "Total Fuel Capacity",
+    totalFuelLoaded: "Total Fuel Loaded",
+    fuelWeight: "Fuel Weight (Density 0.72)",
+    fuelConsumptionRate: "Fuel Consumption Rate",
+    totalEnduranceReport: "Total Endurance",
+    vfrDayEnduranceReport: "VFR Day Endurance (30m reserve)",
+    vfrNightEnduranceReport: "VFR Night Endurance (45m reserve)",
+    informationalReport: "This report is generated for informational purposes. The Commander (CDB) is responsible for the final verification of all parameters. Distances include 50ft obstacle clearance.",
+    currentState: "Current State",
+    zeroFuelState: "Zero Fuel State",
 
     // Fleet Tab
     fleetManagement: "Fleet Management",
@@ -125,6 +136,7 @@ export const translations = {
     unusableL: "Unus. (L)",
     cgEnvelope: "3. CG Envelope (Utility Category)",
     cgM: "CG (m)",
+    centerOfGravityM: "Center of Gravity (m)",
     weightKg: "Weight (kg)",
     noEnvelopePoints: "No envelope points defined.",
     performanceGrids: "4. Performance Grids",
@@ -162,6 +174,19 @@ export const translations = {
     builtFor: "Built for Aéroclub de Camargue Pilots",
     support: "Support",
     
+    // Formula & Chart Tooltips
+    showFormula: "Show Formula",
+    hideFormula: "Hide Formula",
+    perfModelInfo: "Figures predicted using a pure Linear Regression model trained on raw POH data. Headwind and surface adjustment factors match original Robin specifications exactly.",
+    currentCGTooltip: "Current CG",
+    zeroFuelCGTooltip: "Zero Fuel CG",
+    fuelBurnPath: "Fuel Burn Path",
+    envelopeTooltip: "Envelope",
+    linearModelTitle: "// First-Degree Multi-linear Calibration Model",
+    pohParityGuaranteed: "POH Parity Guaranteed",
+    realTimeCalculations: "Real-time Calculations",
+    criticalFuelLevel: "Critical Fuel Level",
+
     // Debug info
     coeffs: "Coeffs",
     modelStatus: "Status: High stability first-degree model matching POH grid boundaries exactly."
@@ -268,8 +293,19 @@ export const translations = {
     pressureAltitude: "Altitude Pression",
     densityAltitude: "Altitude Densité",
     groundRoll: "Distance de roulement",
-    distance50ft: "Distance de décollage (15m)",
+    distance50ft: "Passage des 50ft",
     metric: "Métrique",
+    fuelAndEndurancePlanning: "Planification Carburant & Autonomie",
+    totalFuelCapacity: "Capacité Totale Carburant",
+    totalFuelLoaded: "Carburant Total Embarqué",
+    fuelWeight: "Masse Carburant (Densité 0.72)",
+    fuelConsumptionRate: "Taux de Consommation",
+    totalEnduranceReport: "Autonomie Totale",
+    vfrDayEnduranceReport: "Autonomie VFR Jour (réserve 30m)",
+    vfrNightEnduranceReport: "Autonomie VFR Nuit (réserve 45m)",
+    informationalReport: "Ce rapport est généré à titre informatif. Le Commandant de Bord (CDB) est responsable de la vérification finale de tous les paramètres. Les distances incluent le franchissement d'un obstacle de 50ft.",
+    currentState: "État actuel",
+    zeroFuelState: "État sans carburant",
 
     // Fleet Tab
     fleetManagement: "Gestion de la flotte",
@@ -290,11 +326,12 @@ export const translations = {
     unusableL: "Inutilisable (L)",
     cgEnvelope: "3. Enveloppe de centrage (Catégorie Utilitaire)",
     cgM: "CG (m)",
+    centerOfGravityM: "Centre de Gravité (m)",
     weightKg: "Masse (kg)",
     noEnvelopePoints: "Aucun point d'enveloppe défini.",
     performanceGrids: "4. Données de performances",
-    takeoff50ftGrid: "Décollage (Passage des 15m)",
-    landing50ftGrid: "Atterrissage (Passage des 15m)",
+    takeoff50ftGrid: "Décollage (Passage des 50ft)",
+    landing50ftGrid: "Atterrissage (Passage des 50ft)",
     noData: "Aucune donnée",
     altTemp: "Alt/Temp",
 
@@ -327,8 +364,22 @@ export const translations = {
     builtFor: "Conçu pour les pilotes de l'Aéroclub de Camargue",
     support: "Assistance",
     
+    // Formula & Chart Tooltips
+    showFormula: "Afficher la formule",
+    hideFormula: "Masquer la formule",
+    perfModelInfo: "Performances prédites à l'aide d'un modèle de régression linéaire pur entraîné sur les données brutes du manuel de vol. Les facteurs de correction du vent de face et de la surface correspondent exactement aux spécifications d'origine Robin.",
+    currentCGTooltip: "CG Actuel",
+    zeroFuelCGTooltip: "CG Zéro Carburant",
+    fuelBurnPath: "Trajectoire de consommation",
+    envelopeTooltip: "Enveloppe",
+    linearModelTitle: "// Modèle de calibration multi-linéaire du premier degré",
+    pohParityGuaranteed: "Conformité Manuel de Vol",
+    realTimeCalculations: "Calculs en temps réel",
+    criticalFuelLevel: "Niveau de carburant critique",
+
     // Debug info
     coeffs: "Coefficients",
     modelStatus: "Statut : Modèle de premier degré très stable, s'ajustant exactement aux limites des tableaux de performances du manuel de vol."
   }
 };
+
