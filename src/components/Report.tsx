@@ -167,8 +167,11 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
         </section>
       </div>
 
-      <div className="mt-12 pt-8 border-t border-slate-300 text-[10px] text-slate-500 italic">
-        {t("informationalReport")}
+      <div className="mt-12 pt-8 border-t border-slate-300 text-[10px] text-slate-500 italic space-y-2">
+        <p>{t("informationalReport")}</p>
+        <p className="font-semibold text-slate-600">
+          {t("pressureAltitudeReminder")} &bull; {t("tisaReminder")} &bull; {t("densityAltitudeReminder")}
+        </p>
       </div>
 
       <div className="mt-8 break-before-page">
