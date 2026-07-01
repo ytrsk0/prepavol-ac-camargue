@@ -600,7 +600,7 @@ export default function App() {
           <Plane className="w-5 h-5" />
           <a href="https://github.com/ytrsk0/prepavol-ac-camargue.git" target="_blank" rel="noopener noreferrer" className="text-sm font-bold hover:text-blue-600 transition-colors">Prepavol v2</a>
         </div>
-        <p className="text-xs">© 2024 Yannick Teresiak • {t('builtFor')}</p>
+        <p className="text-xs">© 2026 Yannick Teresiak • {t('builtFor')}</p>
         <div className="flex items-center gap-6">
           <button onClick={() => setActiveTab('docs')} className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">{t("documentationTab")}</button>
           <a href="mailto:yannick.teresiak@gmail.com" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">{t("support")}</a>
