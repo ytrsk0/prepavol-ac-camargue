@@ -236,14 +236,6 @@ export default function App() {
           >
             <Printer className="w-5 h-5" />
           </button>
-          <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
-          <div className="flex items-center gap-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Yannick Teresiak</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t('pilot')} • {t('aeroclub')}</p>
-            </div>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 border-2 border-white dark:border-slate-800 shadow-md" />
-          </div>
         </div>
       </header>
 
@@ -600,10 +592,9 @@ export default function App() {
           <Plane className="w-5 h-5" />
           <a href="https://github.com/ytrsk0/prepavol-ac-camargue.git" target="_blank" rel="noopener noreferrer" className="text-sm font-bold hover:text-blue-600 transition-colors">Prepavol v2</a>
         </div>
-        <p className="text-xs">© 2026 Yannick Teresiak • {t('builtFor')}</p>
+        <p className="text-xs">© 2024 Prepavol • {t('builtFor')}</p>
         <div className="flex items-center gap-6">
           <button onClick={() => setActiveTab('docs')} className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">{t("documentationTab")}</button>
-          <a href="mailto:yannick.teresiak@gmail.com" className="text-xs hover:text-slate-600 dark:hover:text-slate-200 transition-colors">{t("support")}</a>
         </div>
       </footer>
     </div>
