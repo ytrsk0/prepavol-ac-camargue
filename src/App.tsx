@@ -513,10 +513,10 @@ export default function App() {
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Info className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    Prepavol Guide & Documentation
+                    {t("documentationTitle")}
                   </h2>
                   <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">
-                    Official documentation, fleet specifications, and system requirements for Aéroclub de Camargue pilots.
+                    {t("documentationDesc")}
                   </p>
                 </div>
 
@@ -573,7 +573,7 @@ export default function App() {
                           y = &beta;₀ + &beta;₁Zp + &beta;₂Tk + &beta;₃W
                         </p>
                         <p>
-                          This model provides precise, non-oscillating calculations over the standard bilinear interpolations, ensuring safe flight preparation margins.
+                          {t("pohModelDesc5")}
                         </p>
                       </div>
                     </div>

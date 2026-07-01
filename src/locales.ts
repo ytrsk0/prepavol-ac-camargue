@@ -169,6 +169,9 @@ export const translations = {
     pohModelDesc2: "The model is trained on the discrete performance points from the POH grids.",
     pohModelDesc3: "Data parsing and model fitting are implemented in Python",
     pohModelDesc4: "Predictions are evaluated real-time in the application using the serialized coefficients.",
+    pohModelDesc5: "This model provides precise, non-oscillating calculations over the standard bilinear interpolations, ensuring safe flight preparation margins.",
+    documentationTitle: "Prepavol Guide & Documentation",
+    documentationDesc: "Official documentation, fleet specifications, and system requirements for Aéroclub de Camargue pilots.",
 
     // Footer
     builtFor: "Built for Aéroclub de Camargue Pilots",
@@ -359,6 +362,9 @@ export const translations = {
     pohModelDesc2: "Le modèle est entraîné sur les points discrets extraits des tableaux de performances du manuel de vol.",
     pohModelDesc3: "Le parsing des données et l'entraînement du modèle sont implémentés en Python",
     pohModelDesc4: "Les prédictions sont évaluées en temps réel dans l'application grâce aux coefficients sérialisés.",
+    pohModelDesc5: "Ce modèle fournit des calculs précis et non oscillants par rapport aux interpolations bilinéaires standard, garantissant des marges de préparation de vol sûres.",
+    documentationTitle: "Guide & Documentation Prepavol",
+    documentationDesc: "Documentation officielle, spécifications de la flotte et exigences du système pour les pilotes de l'Aéroclub de Camargue.",
 
     // Footer
     builtFor: "Conçu pour les pilotes de l'Aéroclub de Camargue",
