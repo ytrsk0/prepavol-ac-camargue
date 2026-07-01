@@ -164,16 +164,16 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
               </tbody>
             </table>
           </div>
-        </section>
-      </div>
 
-      <div className="mt-8">
-        <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">{t("remindersTitle")}</h2>
-        <ul className="list-disc list-inside text-sm text-slate-800 space-y-1">
-          <li>{t("pressureAltitudeReminder")}</li>
-          <li>{t("tisaReminder")}</li>
-          <li>{t("densityAltitudeReminder")}</li>
-        </ul>
+          <div className="mt-8">
+            <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">{t("remindersTitle")}</h2>
+            <ul className="list-disc list-inside text-sm text-slate-800 space-y-1">
+              <li>{t("pressureAltitudeReminder")}</li>
+              <li>{t("tisaReminder")}</li>
+              <li>{t("densityAltitudeReminder")}</li>
+            </ul>
+          </div>
+        </section>
       </div>
 
       <div className="mt-8 pt-8 border-t border-slate-300 text-[10px] text-slate-500 italic">
