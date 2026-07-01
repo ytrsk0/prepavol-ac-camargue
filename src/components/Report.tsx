@@ -103,7 +103,7 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
         <section className="space-y-8">
           <div>
             <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">{t("takeoffPerformance")}</h2>
-            <p className="text-xs mb-2">Conditions: {data.tkalt}ft, {data.tktemp}°C, {data.tkqnh}hPa (Zp: {Math.round(tkPerf.zp)}ft)</p>
+            <p className="text-xs mb-2">Conditions: {data.tkalt}ft, {data.tktemp}°C, {data.tkqnh}hPa (Zp: {Math.round(tkPerf.zp)}ft, Zd: {Math.round(tkPerf.zd)}ft)</p>
             <table className="w-full text-xs border-collapse border border-black">
               <thead>
                 <tr className="bg-slate-100 italic">
@@ -135,7 +135,7 @@ export const Report: React.FC<ReportProps> = ({ plane, data, wb, tkPerf, ldPerf 
 
           <div>
             <h2 className="text-lg font-bold border-b border-black mb-4 uppercase">{t("landingPerformance")}</h2>
-            <p className="text-xs mb-2">Conditions: {data.ldalt}ft, {data.ldtemp}°C, {data.ldqnh}hPa (Zp: {Math.round(ldPerf.zp)}ft)</p>
+            <p className="text-xs mb-2">Conditions: {data.ldalt}ft, {data.ldtemp}°C, {data.ldqnh}hPa (Zp: {Math.round(ldPerf.zp)}ft, Zd: {Math.round(ldPerf.zd)}ft)</p>
             <table className="w-full text-xs border-collapse border border-black">
               <thead>
                 <tr className="bg-slate-100 italic">
