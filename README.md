@@ -1,6 +1,6 @@
 # PrepaVol
 
-[![Build and Deploy](https://github.com/yannick-teresiak/prepavol/actions/workflows/ci.yml/badge.svg)](https://github.com/yannick-teresiak/prepavol/actions/workflows/ci.yml)
+[![Build and Deploy](https://github.com/ytrsk0/prepavol-ac-camargue/actions/workflows/ci.yml/badge.svg)](https://github.com/yannick-teresiak/prepavol/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 Prepavol is a modern web application that helps prepare light aviation flights.
