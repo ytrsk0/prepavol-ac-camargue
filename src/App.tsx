@@ -236,6 +236,10 @@ export default function App() {
           >
             <Printer className="w-5 h-5" />
           </button>
+          <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
+          <div className="text-right hidden sm:block">
+            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{t('aeroclub')}</p>
+          </div>
         </div>
       </header>
 
