@@ -70,9 +70,9 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
   const currentPoint = [{ x: Number(cg.toFixed(4)), y: weight }];
   const noFuelPoint = [{ x: Number(cgNoFuel.toFixed(4)), y: weightNoFuel }];
 
-  // Calculate bounds to always include envelope and both CG points
-  const points = [...plane.envelope.map(p => p[0]), cg, cgNoFuel];
-  const weightPoints = [...plane.envelope.map(p => p[1]), weight, weightNoFuel, plane.mtow];
+  // Calculate bounds to always include envelope and all CG points
+  const points = [...plane.envelope.map(p => p[0]), cg, cgNoFuel, plane.arms.bew];
+  const weightPoints = [...plane.envelope.map(p => p[1]), weight, weightNoFuel, plane.mtow, plane.bew];
   
   const xMin = Math.min(...points) * 0.9;
   const xMax = Math.max(...points) * 1.1;
@@ -131,15 +131,23 @@ export const EnvelopeChart: React.FC<EnvelopeChartProps> = ({
       />
 
       {/* Loading Path (Fuel burn) */}
-      <Scatter 
-        name={t("fuelBurnPath")} 
-        data={[...currentPoint, ...noFuelPoint]} 
-        fill="transparent" 
-        stroke="#64748b" 
-        strokeWidth={1.5} 
+      <ReferenceLine
+        segment={[
+          { x: Number(cg.toFixed(4)), y: weight },
+          { x: Number(cgNoFuel.toFixed(4)), y: weightNoFuel }
+        ]}
+        stroke="#64748b"
+        strokeWidth={1.5}
         strokeDasharray="4 4"
-        line 
-        shape={<NoPoint />}
+      />
+
+      {/* BEW Line */}
+      <ReferenceLine 
+        y={plane.bew} 
+        stroke="#f59e0b" 
+        strokeDasharray="5 5"
+        strokeWidth={1.5}
+        label={{ value: t("basicEmptyWeight"), position: "top", style: { fill: '#f59e0b', fontSize: '10px', fontWeight: 'bold' } }}
       />
 
       {/* Current CG Point */}
