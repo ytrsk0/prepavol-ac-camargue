@@ -621,6 +621,7 @@ function WeightInput({ label, name, value, onChange, icon, max }: any) {
         name={name}
         value={value}
         onChange={onChange}
+        onFocus={(e) => e.target.select()}
         max={max}
         className={cn(
           "w-full rounded-xl px-3 py-2 text-sm font-bold border outline-none transition-all",
@@ -645,6 +646,7 @@ function EnvInput({ label, name, value, onChange, icon }: any) {
         name={name}
         value={value}
         onChange={onChange}
+        onFocus={(e) => e.target.select()}
         className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 text-xs font-bold focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
       />
     </div>
