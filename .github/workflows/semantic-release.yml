@@ -14,6 +14,7 @@ jobs:
       issues: write
       pull-requests: write
       id-token: write
+      actions: write
 
     steps:
       - name: Checkout Code
@@ -35,12 +36,13 @@ jobs:
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
         with:
+          branches: |
+            [
+              'main'
+            ]
           extra_plugins: |
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
             @semantic-release/changelog
             @semantic-release/git
-            @semantic-release/github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
