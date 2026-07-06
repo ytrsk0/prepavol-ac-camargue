@@ -32,6 +32,7 @@ jobs:
         run: npm ci
 
       - name: Run Semantic Release
+        id: semantic
         uses: cycjimmy/semantic-release-action@v4
         with:
           extra_plugins: |
@@ -51,6 +52,6 @@ jobs:
             github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'build-and-deploy.yml',
+              workflow_id: 'ci.yml',
               ref: 'main'
             })
